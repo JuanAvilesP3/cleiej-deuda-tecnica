@@ -71,9 +71,15 @@ SESSION.headers.update({
 })
 
 
-def gh_get(url, params=None, max_retries=3):
+def gh_get(url, params=None, max_retries=5):
     for attempt in range(max_retries):
-        resp = SESSION.get(url, params=params, timeout=30)
+        try:
+            resp = SESSION.get(url, params=params, timeout=30)
+        except requests.exceptions.RequestException as exc:
+            wait = min(5 * (attempt + 1), 30)
+            print(f"  Error de red ({exc.__class__.__name__}), reintentando en {wait}s...")
+            time.sleep(wait)
+            continue
         if resp.status_code == 403 and "rate limit" in resp.text.lower():
             reset = int(resp.headers.get("X-RateLimit-Reset", time.time() + 60))
             wait = max(reset - time.time(), 5)
@@ -167,11 +173,10 @@ def main():
     academic_out = RAW_DIR / "academic_repos.jsonl"
     control_out = RAW_DIR / "control_repos.jsonl"
 
-    candidates = search_academic_candidates(langs, kws)
-    random.Random(42).shuffle(candidates)
-
     # Reanudable: si ya existe una corrida previa, se cargan los que ya
-    # se aceptaron y se salta a los candidatos no revisados todavia.
+    # se aceptaron y se salta a los candidatos no revisados todavia. Si
+    # ya se llego al objetivo, ni siquiera se rebusca (ahorra minutos y
+    # exposicion a fallos de red transitorios).
     academic_selected = []
     already_seen = set()
     if academic_out.exists():
@@ -180,6 +185,9 @@ def main():
                 academic_selected.append(json.loads(line))
                 already_seen.add(json.loads(line)["full_name"])
         print(f"Reanudando: {len(academic_selected)} académicos ya aceptados.")
+
+    candidates = [] if len(academic_selected) >= TARGET_ACADEMIC else search_academic_candidates(langs, kws)
+    random.Random(42).shuffle(candidates)
 
     with open(academic_out, "a" if academic_out.exists() else "w", encoding="utf-8") as f:
         for repo in candidates:
