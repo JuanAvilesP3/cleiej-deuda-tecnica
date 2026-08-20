@@ -221,41 +221,54 @@ def main():
                 control_seen.add(rec["full_name"])
         print(f"Reanudando control: {len(control_selected)} ya aceptados.")
 
+    # Pareo UNO A UNO por tamano (ficha: "el pareo es lo que hace valida
+    # la comparacion"). Por cada repo academico se busca un repo NO
+    # academico del mismo lenguaje con tamano parecido (+/-50%),
+    # ordenado por "updated" (no por estrellas -- eso sesga hacia
+    # proyectos famosos y enormes tipo "java-design-patterns", que no
+    # son comparables a un proyecto de curso).
+    rng = random.Random(43)
     with open(control_out, "a" if control_out.exists() else "w", encoding="utf-8") as f:
-        size_pool = [r["size_kb"] for r in academic_selected] or [MIN_SIZE_KB]
-        for lang in langs:
+        for academic in academic_selected:
             if len(control_selected) >= TARGET_CONTROL:
                 break
-            query = f"language:{lang} size:{MIN_SIZE_KB}..{max(size_pool)*3} stars:>5"
-            for page in range(1, 6):
-                if len(control_selected) >= TARGET_CONTROL:
-                    break
+            lang = academic.get("language")
+            size = academic.get("size_kb") or MIN_SIZE_KB
+            if not lang or not size:
+                continue
+            lo, hi = max(int(size * 0.5), 50), int(size * 1.5) + 50
+            query = f"language:{lang} size:{lo}..{hi}"
+
+            try:
+                page = rng.randint(1, 3)
                 resp = gh_get(
                     "https://api.github.com/search/repositories",
-                    params={"q": query, "per_page": 100, "page": page, "sort": "stars"},
+                    params={"q": query, "per_page": 30, "page": page, "sort": "updated"},
                 )
                 items = resp.json().get("items", [])
-                if not items:
-                    break
-                for repo in items:
-                    if len(control_selected) >= TARGET_CONTROL:
-                        break
-                    full_name = repo["full_name"]
-                    if full_name in control_seen:
-                        continue
-                    if any(full_name == a["full_name"] for a in academic_selected):
-                        continue
-                    if any(kw.replace("-", " ") in (repo.get("description") or "").lower() for kw in ACADEMIC_KEYWORDS):
-                        continue  # evitar colar academicos en el control
-                    record = {
-                        "full_name": full_name, "language": repo.get("language"),
-                        "size_kb": repo.get("size"), "stargazers": repo.get("stargazers_count"),
-                        "clone_url": repo.get("clone_url"), "description": repo.get("description"),
-                    }
-                    control_selected.append(record)
-                    f.write(json.dumps(record, ensure_ascii=False) + "\n")
-                    f.flush()
-                time.sleep(2.1)
+            except Exception:
+                items = []
+            time.sleep(2.1)
+
+            rng.shuffle(items)
+            for repo in items:
+                full_name = repo["full_name"]
+                if full_name in control_seen or any(full_name == a["full_name"] for a in academic_selected):
+                    continue
+                if any(kw.replace("-", " ") in (repo.get("description") or "").lower() for kw in ACADEMIC_KEYWORDS):
+                    continue  # evitar colar academicos en el control
+                record = {
+                    "full_name": full_name, "language": repo.get("language"),
+                    "size_kb": repo.get("size"), "stargazers": repo.get("stargazers_count"),
+                    "clone_url": repo.get("clone_url"), "description": repo.get("description"),
+                    "paired_with": academic["full_name"],
+                }
+                control_selected.append(record)
+                control_seen.add(full_name)
+                f.write(json.dumps(record, ensure_ascii=False) + "\n")
+                f.flush()
+                print(f"[{len(control_selected)}/{TARGET_CONTROL}] control (pareja de {academic['full_name']}): {full_name}")
+                break
 
     print(f"{len(control_selected)} repositorios de control identificados (objetivo: {TARGET_CONTROL})")
     print(f"\nCompletado: listas guardadas en {RAW_DIR}")
