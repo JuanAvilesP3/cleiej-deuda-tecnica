@@ -111,11 +111,19 @@ def search_academic_candidates(languages=None, keywords=None):
 
 
 def repo_has_latam_contributor(full_name: str) -> bool:
-    resp = gh_get(f"https://api.github.com/repos/{full_name}/contributors", params={"per_page": 10})
+    try:
+        resp = SESSION.get(f"https://api.github.com/repos/{full_name}/contributors", params={"per_page": 10}, timeout=30)
+    except Exception:
+        return False
     if resp.status_code != 200:
         return False
     for contrib in resp.json():
-        user_resp = gh_get(f"https://api.github.com/users/{contrib['login']}")
+        if contrib.get("type") == "Bot":  # p.ej. "Copilot", "dependabot[bot]": no tienen perfil de usuario
+            continue
+        try:
+            user_resp = SESSION.get(f"https://api.github.com/users/{contrib['login']}", timeout=30)
+        except Exception:
+            continue
         if user_resp.status_code != 200:
             continue
         location = (user_resp.json().get("location") or "").lower()
@@ -126,10 +134,13 @@ def repo_has_latam_contributor(full_name: str) -> bool:
 
 
 def get_commit_count_estimate(full_name: str, default_branch: str) -> int:
-    resp = gh_get(
-        f"https://api.github.com/repos/{full_name}/commits",
-        params={"sha": default_branch, "per_page": 1},
-    )
+    try:
+        resp = SESSION.get(
+            f"https://api.github.com/repos/{full_name}/commits",
+            params={"sha": default_branch, "per_page": 1}, timeout=30,
+        )
+    except Exception:
+        return 0
     if resp.status_code != 200:
         return 0
     link = resp.headers.get("Link", "")
@@ -159,16 +170,32 @@ def main():
     candidates = search_academic_candidates(langs, kws)
     random.Random(42).shuffle(candidates)
 
+    # Reanudable: si ya existe una corrida previa, se cargan los que ya
+    # se aceptaron y se salta a los candidatos no revisados todavia.
     academic_selected = []
-    with open(academic_out, "w", encoding="utf-8") as f:
+    already_seen = set()
+    if academic_out.exists():
+        for line in academic_out.read_text(encoding="utf-8").splitlines():
+            if line.strip():
+                academic_selected.append(json.loads(line))
+                already_seen.add(json.loads(line)["full_name"])
+        print(f"Reanudando: {len(academic_selected)} académicos ya aceptados.")
+
+    with open(academic_out, "a" if academic_out.exists() else "w", encoding="utf-8") as f:
         for repo in candidates:
             if len(academic_selected) >= TARGET_ACADEMIC:
                 break
             full_name = repo["full_name"]
-            n_commits = get_commit_count_estimate(full_name, repo.get("default_branch", "main"))
-            if n_commits < MIN_COMMITS:
+            if full_name in already_seen:
                 continue
-            if not repo_has_latam_contributor(full_name):
+            try:
+                n_commits = get_commit_count_estimate(full_name, repo.get("default_branch", "main"))
+                if n_commits < MIN_COMMITS:
+                    continue
+                if not repo_has_latam_contributor(full_name):
+                    continue
+            except Exception as exc:
+                print(f"  (omitido por error: {full_name}: {exc})")
                 continue
             record = {
                 "full_name": full_name, "language": repo.get("language"),
@@ -185,7 +212,16 @@ def main():
 
     # --- Muestra de control: repos NO academicos, mismo lenguaje/tamano, al azar ---
     control_selected = []
-    with open(control_out, "w", encoding="utf-8") as f:
+    control_seen = set()
+    if control_out.exists():
+        for line in control_out.read_text(encoding="utf-8").splitlines():
+            if line.strip():
+                rec = json.loads(line)
+                control_selected.append(rec)
+                control_seen.add(rec["full_name"])
+        print(f"Reanudando control: {len(control_selected)} ya aceptados.")
+
+    with open(control_out, "a" if control_out.exists() else "w", encoding="utf-8") as f:
         size_pool = [r["size_kb"] for r in academic_selected] or [MIN_SIZE_KB]
         for lang in langs:
             if len(control_selected) >= TARGET_CONTROL:
@@ -205,6 +241,8 @@ def main():
                     if len(control_selected) >= TARGET_CONTROL:
                         break
                     full_name = repo["full_name"]
+                    if full_name in control_seen:
+                        continue
                     if any(full_name == a["full_name"] for a in academic_selected):
                         continue
                     if any(kw.replace("-", " ") in (repo.get("description") or "").lower() for kw in ACADEMIC_KEYWORDS):
