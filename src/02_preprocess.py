@@ -36,6 +36,13 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
+# jscpd se instala via npm como un wrapper .cmd en Windows;
+# subprocess.run(["jscpd", ...]) sin shell=True no lo resuelve
+# (FileNotFoundError silencioso, WinError 2) -- por eso la duplicacion
+# salio vacia en las primeras 600 corridas. Se resuelve la ruta real
+# una sola vez con shutil.which.
+JSCPD_BIN = shutil.which("jscpd") or shutil.which("jscpd.cmd") or "jscpd"
+
 ROOT = Path(__file__).resolve().parent.parent
 RAW_DIR = ROOT / "data" / "raw"
 REPOS_DIR = RAW_DIR / "repos"
@@ -94,7 +101,7 @@ def run_lizard(repo_path: Path) -> dict:
     try:
         result = subprocess.run(
             ["lizard", str(repo_path), "-l", "java", "-l", "python", "-l", "javascript", "--csv"],
-            timeout=TOOL_TIMEOUT, capture_output=True, text=True,
+            timeout=TOOL_TIMEOUT, capture_output=True, text=True, encoding="utf-8", errors="replace",
         )
         lines = [l for l in result.stdout.strip().split("\n") if l and not l.startswith("NLOC")]
         if not lines:
@@ -123,8 +130,8 @@ def run_jscpd(repo_path: Path) -> dict:
     out_dir = repo_path.parent / f"{repo_path.name}_jscpd"
     try:
         subprocess.run(
-            ["jscpd", str(repo_path), "--reporters", "json", "--output", str(out_dir), "--silent"],
-            timeout=TOOL_TIMEOUT, capture_output=True,
+            [JSCPD_BIN, str(repo_path), "--reporters", "json", "--output", str(out_dir), "--silent"],
+            timeout=TOOL_TIMEOUT, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
         )
         report_path = out_dir / "jscpd-report.json"
         if not report_path.exists():
