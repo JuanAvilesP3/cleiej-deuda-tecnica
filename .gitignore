@@ -8,3 +8,4 @@ data/raw/*
 *.out
 *.synctex.gz
 data/processed/
+.env
