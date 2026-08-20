@@ -5,6 +5,10 @@ desde 05_figures.py. Mantiene consistencia visual entre los 10 artículos
 y garantiza legibilidad en impresión blanco y negro (ver Fase 2, punto 6).
 """
 
+import matplotlib
+
+matplotlib.use("Agg")  # backend no interactivo: evita cuelgues/crashes de
+# Tkinter al generar figuras en procesos en segundo plano (Windows)
 import matplotlib.pyplot as plt
 
 COLORS = {
