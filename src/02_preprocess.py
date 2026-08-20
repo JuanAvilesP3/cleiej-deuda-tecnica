@@ -31,7 +31,9 @@ herramientas equivalentes, mas livianas y sin servidor:
 import json
 import shutil
 import subprocess
+import threading
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -43,22 +45,49 @@ JAVA_BIN = next((TOOLS_DIR / p for p in ["jdk-17.0.20+8/bin/java.exe", "jdk-17.0
 CK_JAR = TOOLS_DIR / "ck.jar"
 
 TEST_FILE_PATTERNS = ("test_", "_test.", "test.", "tests.", ".test.", ".spec.", "Test.java", "Tests.java")
-CLONE_TIMEOUT = 60
-TOOL_TIMEOUT = 90
+CLONE_TIMEOUT = 45  # bajo contencion (varios clones a la vez) un repo
+# que tarda 12s aislado puede tardar bastante mas; con el fix del
+# directorio parcial, un timeout mas generoso ya no cuesta tanto en reintentos
+TOOL_TIMEOUT = 60
+N_WORKERS = 3  # 6 en paralelo causaba ~45% de fallos de clonado por
+# contencion de red (confirmado con pruebas); 3 es el punto donde los
+# fallos bajan a un nivel razonable sin perder toda la ganancia de velocidad.
 
 
-def clone_repo(clone_url: str, dest: Path) -> bool:
+def _force_rmtree(path: Path, attempts=3):
+    """rmtree con reintentos: en Windows, un directorio que acaba de
+    quedar de un proceso git matado por timeout a veces no se libera
+    de inmediato (el handle tarda un instante en soltarse)."""
+    for i in range(attempts):
+        shutil.rmtree(path, ignore_errors=True)
+        if not path.exists():
+            return
+        time.sleep(0.5 * (i + 1))
+
+
+def clone_repo(clone_url: str, dest: Path, max_retries=3) -> bool:
+    # OJO: antes se trataba "el directorio ya existe" como exito. Eso
+    # era el bug real detras de los "fallos" que no eran de red: un
+    # intento anterior fallido (timeout) dejaba el directorio a medio
+    # crear, y el siguiente intento lo daba por bueno sin haber
+    # clonado nada. Ahora siempre se parte de un directorio limpio.
     if dest.exists():
-        return True
-    try:
-        subprocess.run(
-            ["git", "clone", "--depth", "1", "--quiet", clone_url, str(dest)],
-            timeout=CLONE_TIMEOUT, capture_output=True, check=True,
-        )
-        return True
-    except Exception:
-        shutil.rmtree(dest, ignore_errors=True)
-        return False
+        _force_rmtree(dest)
+
+    for attempt in range(max_retries):
+        try:
+            subprocess.run(
+                ["git", "clone", "--depth", "1", "--quiet", clone_url, str(dest)],
+                timeout=CLONE_TIMEOUT, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True,
+            )
+            if dest.exists() and any(dest.iterdir()):
+                return True
+        except Exception:
+            pass
+        _force_rmtree(dest)
+        if attempt < max_retries - 1:
+            time.sleep(1.5 * (attempt + 1))
+    return False
 
 
 def run_lizard(repo_path: Path) -> dict:
@@ -145,6 +174,30 @@ def test_file_ratio(repo_path: Path) -> float:
     return test_files / all_files if all_files else 0.0
 
 
+def process_one_repo(repo: dict, group_name: str, group_dir: Path):
+    full_name = repo["full_name"]
+    dest = group_dir / full_name.replace("/", "__")
+
+    if not clone_repo(repo["clone_url"], dest):
+        return full_name, None
+
+    try:
+        lizard_r = run_lizard(dest)
+        jscpd_r = run_jscpd(dest)
+        ck_r = run_ck(dest, repo.get("language", ""))
+        tfr = test_file_ratio(dest)
+    finally:
+        shutil.rmtree(dest, ignore_errors=True)  # ahorrar espacio: ya se extrajeron las metricas
+
+    row = [
+        full_name, group_name, repo.get("language", ""), repo.get("size_kb", ""),
+        lizard_r["cc_mean"], lizard_r["cc_max"], lizard_r["nloc_total"], lizard_r["n_functions"],
+        jscpd_r["duplication_pct"], tfr,
+        ck_r["cbo_mean"], ck_r["lcom_mean"], ck_r["dit_mean"], ck_r["wmc_mean"],
+    ]
+    return full_name, row
+
+
 def process_group(jsonl_path: Path, group_name: str, out_path: Path):
     repos = [json.loads(line) for line in jsonl_path.read_text(encoding="utf-8").splitlines() if line.strip()]
     group_dir = REPOS_DIR / group_name
@@ -154,38 +207,36 @@ def process_group(jsonl_path: Path, group_name: str, out_path: Path):
     if out_path.exists():
         import pandas as pd
         already_done = set(pd.read_csv(out_path)["full_name"])
+        print(f"[{group_name}] reanudando: {len(already_done)} ya procesados")
+
+    pending = [r for r in repos if r["full_name"] not in already_done]
+    write_lock = threading.Lock()
+    file_is_new = not out_path.exists()
 
     with open(out_path, "a" if out_path.exists() else "w", encoding="utf-8") as f:
-        if out_path.stat().st_size == 0 if out_path.exists() else True:
+        if file_is_new:
             f.write("full_name,group,language,size_kb,cc_mean,cc_max,nloc_total,n_functions,"
                     "duplication_pct,test_file_ratio,cbo_mean,lcom_mean,dit_mean,wmc_mean\n")
-
-        for i, repo in enumerate(repos):
-            full_name = repo["full_name"]
-            if full_name in already_done:
-                continue
-            dest = group_dir / full_name.replace("/", "__")
-
-            if not clone_repo(repo["clone_url"], dest):
-                print(f"[{group_name} {i+1}/{len(repos)}] clon falló: {full_name}")
-                continue
-
-            lizard_r = run_lizard(dest)
-            jscpd_r = run_jscpd(dest)
-            ck_r = run_ck(dest, repo.get("language", ""))
-            tfr = test_file_ratio(dest)
-
-            row = [
-                full_name, group_name, repo.get("language", ""), repo.get("size_kb", ""),
-                lizard_r["cc_mean"], lizard_r["cc_max"], lizard_r["nloc_total"], lizard_r["n_functions"],
-                jscpd_r["duplication_pct"], tfr,
-                ck_r["cbo_mean"], ck_r["lcom_mean"], ck_r["dit_mean"], ck_r["wmc_mean"],
-            ]
-            f.write(",".join("" if v is None else str(v) for v in row) + "\n")
             f.flush()
 
-            shutil.rmtree(dest, ignore_errors=True)  # ahorrar espacio: ya se extrajeron las metricas
-            print(f"[{group_name} {i+1}/{len(repos)}] {full_name} listo")
+        done_count = 0
+        with ThreadPoolExecutor(max_workers=N_WORKERS) as executor:
+            futures = {executor.submit(process_one_repo, repo, group_name, group_dir): repo for repo in pending}
+            for future in as_completed(futures):
+                done_count += 1
+                full_name = futures[future]["full_name"]
+                try:
+                    name, row = future.result()
+                except Exception as exc:
+                    print(f"[{group_name} {done_count}/{len(pending)}] error inesperado en {full_name}: {exc}")
+                    continue
+                if row is None:
+                    print(f"[{group_name} {done_count}/{len(pending)}] clon falló: {full_name}")
+                    continue
+                with write_lock:
+                    f.write(",".join("" if v is None else str(v) for v in row) + "\n")
+                    f.flush()
+                print(f"[{group_name} {done_count}/{len(pending)}] {full_name} listo")
 
 
 def main():
