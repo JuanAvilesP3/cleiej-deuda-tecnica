@@ -65,13 +65,13 @@ Filtros: lenguaje (Java/Python/JavaScript), > 500 líneas, ≥ 10 commits, afili
 
 ## Bitácora
 
-## 18/08 - Montaje
+## 18/08 - Juan — Montaje
 - Hecho: estructura de carpetas creada, plantilla de figuras copiada, repositorio Git inicializado.
 - Bloqueado en: pendiente ficha de revista y descarga de datos.
 - Siguiente: completar JOURNAL.md y descargar dataset.
 - Tiempo de computo consumido: 0h
 
-## 19-20/08 - Día 1 completo: datos, experimento, estadística y figuras
+## 19-20/08 - Juan — Día 1 completo: datos, experimento, estadística y figuras
 - Hecho:
   - Usuario generó token personal de GitHub (`.env`, gitignored). `01_download.py`: 300 repos académicos LatAm identificados (búsqueda por palabras clave + verificación de afiliación LatAm en colaboradores) y 300 de control **pareados uno a uno por tamaño** (bug corregido: la primera versión ordenaba por popularidad y colaba proyectos gigantes tipo "java-design-patterns", violando el pareo que pide la ficha).
   - **Desviación metodológica documentada:** SonarQube Community (que pide la ficha) requiere Docker o admin, inviable aquí y poco práctico a 600 repos. Sustituido por `lizard` + `jscpd` + `ck` (esta última sí es la misma herramienta de la ficha, corre standalone con un JDK portátil instalado sin admin). Cobertura de pruebas: proxy por proporción de archivos de test, no ejecución real de tests.
@@ -82,7 +82,7 @@ Filtros: lenguaje (Java/Python/JavaScript), > 500 líneas, ≥ 10 commits, afili
 - Siguiente: redactar `paper/main.tex`, encuadrando honestamente el hallazgo invertido de complejidad (no forzarlo a calzar con la hipótesis original).
 - Tiempo de computo consumido: ~4h (mayormente los dos reprocesamientos completos de 600 repos)
 
-## 20/08 - Redacción del manuscrito
+## 20/08 - Juan — Redacción del manuscrito
 - Hecho: `paper/main.tex` completo. 2 citas reales de CLEIej buscadas y verificadas por URL directa: Santos et al. 2017 (revisión de métricas de calidad OO) y Hamer et al. 2021 (métricas de Git en cursos de ingeniería de software). El manuscrito reporta el hallazgo invertido de complejidad tal cual salió (académico significativamente MENOS complejo, no más), con una explicación honesta: el grupo de control, pareado por tamaño, probablemente también es código informal/de aprendizaje, no software profesional — así que la comparación real es "académico etiquetado vs. repos chicos sin etiquetar", no "académico vs. profesional". Se declaran explícitamente las sustituciones de herramientas (lizard+jscpd+ck en vez de SonarQube) en Metodología y Limitaciones.
 - Bloqueado en: nada. **Con esto, los 5 manuscritos de línea A (P2, P6, P8, P9, P10) están redactados.**
 - Siguiente: Fase 2 completa para los 5 (verificación formal de DOIs, revisión adversarial en 2 rondas, pasada anti-IA, ajuste a plantilla de cada revista).
