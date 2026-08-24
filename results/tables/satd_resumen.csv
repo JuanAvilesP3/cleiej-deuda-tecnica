@@ -1,0 +1,2 @@
+metric,n_academico,n_control,median_academico,median_control,iqr_academico,iqr_control,cliffs_delta,mannwhitney_u,p_value
+"SATD comments per 1,000 lines of code",223,191,0.0,0.0,0.00--0.52,0.00--0.00,0.1903129622238396,25349.5,6.880422983685484e-05
