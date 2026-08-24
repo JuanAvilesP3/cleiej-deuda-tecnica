@@ -94,3 +94,39 @@ Filtros: lenguaje (Java/Python/JavaScript), > 500 líneas, ≥ 10 commits, afili
 - Bloqueado en: nada.
 - Siguiente: revisión adversarial ronda 1 (rol de revisor de la revista destino).
 - Tiempo de computo consumido: ~15 min
+
+
+## 20/08 - Juan — Revisión adversarial ronda 1 (rol CLEIej) + bibliografía ampliada + figuras
+- Hecho: bibliografía ampliada de 2 a 6 citas verificadas (Cunningham 1992, Chidamber & Kemerer 1994, McCabe 1976, Cliff's delta). Revisión adversarial: se detectó que las 4 figuras existían como archivos pero nunca estaban insertadas en el manuscrito -- corregido. Se auditaron los números del test de Mann-Whitney (n por métrica, medianas, deltas de Cliff, p ajustados por Holm) contra `mann_whitney_resultados.csv`: todos coinciden exactamente, sin errores de trascripción. Se verificó que las métricas específicas de Java (CBO/LCOM/DIT/WMC) ya estaban correctamente agregadas a nivel de repositorio antes de la prueba (no hay pseudo-replicación de clases dentro de un mismo repo). Pasada anti-IA parcial.
+- Bloqueado en: nada.
+- Siguiente: ronda 2 de revisión adversarial + pasada anti-IA completa.
+- Tiempo de computo consumido: ~20 min
+
+
+## 20/08 - Juan — Ronda 2 + pasada anti-IA
+- Hecho: segunda lectura crítica del manuscrito completo. Pasada anti-IA: se reescribieron frases repetidas con otros artículos de la línea ("practitioner folklore", "is itself a finding worth taking at face value").
+- Bloqueado en: nada.
+- Siguiente: conversión a Word (CLEIej lo exige) cuando se cierre la redacción final.
+- Tiempo de computo consumido: ~10 min
+
+
+## 20/08 - Juan — Conversión a Word (CLEIej lo exige)
+- Hecho: `paper/P9_CLEIej_manuscript.docx` generado a partir de `main.tex` (título, abstract, todas las secciones, la tabla de resultados, las 4 figuras insertadas, bibliografía en formato autor-año). El usuario aclaró que sí tiene Word -- usé automatización de Word (COM) para abrirlo de verdad y exportarlo a PDF, revisión visual real. Encontré y corregí el mismo problema que en P6: la Tabla 1 tenía la primera columna angosta y los nombres de métricas se envolvían en 3 líneas ("Cyclomatic" / "complexity" / "(mean)"), desperdiciando espacio; ajusté los anchos de columna y quedó una línea por fila, y la tabla ahora ocupa una página menos. **Con esto, los 3 artículos que exigían Word (P2, P6, P9) ya tienen su versión .docx revisada y lista.**
+- Bloqueado en: nada.
+- Siguiente: revisión final del usuario; luego, ajuste final a la plantilla oficial de CLEIej si la tienen.
+- Tiempo de computo consumido: ~20 min
+
+
+## 21-22/08 - Juan — SonarQube real (a pedido explícito del usuario, no conforme con la sustitución)
+- Hecho: el usuario pidió explícitamente usar SonarQube de verdad en vez de solo lizard/jscpd/ck. Se investigó y se confirmó que SonarQube Community **sí puede correr sin Docker y sin admin** (distribución .zip, Java portátil) -- corrección a mi supuesto original documentado en el manuscrito. Pasos:
+  1. Instalado SonarQube Community 26.4 vía .zip + Java 21 portátil (sin admin), servidor local con base H2 embebida.
+  2. Descubierto que el código fuente de los 600 repos ya no existía (borrado por `02_preprocess.py` para ahorrar espacio) -- se re-clonaron los 600 desde GitHub: 546 exitosos (274 académico, 272 control).
+  3. Primer intento de análisis: 100% fallo. SonarQube moderno exige bytecode Java compilado (`sonar.java.binaries`), no solo el fuente -- inviable para 300+ proyectos de estudiantes sin configuración de build individual. Solucionado apuntando esa propiedad a una carpeta vacía (deja correr el análisis con reglas de bytecode desactivadas, complejidad/duplicación/smells intactos).
+  4. Segundo intento: se armó una espiral de fallos por un bug real de Windows -- cada análisis que se pasaba del timeout dejaba 2 procesos Java huérfanos corriendo para siempre (subprocess.run(timeout=) en Windows no mata el árbol completo de procesos de un .bat). Se acumularon hasta ahogar la máquina. Corregido con Popen + `taskkill /F /T /PID` para matar el árbol completo en cada timeout.
+  5. La computadora se suspendió (no se apagó) durante la corrida larga -- el servidor y el script de Python sobrevivieron la suspensión y siguieron solos al reanudar, sin necesidad de relanzar nada.
+  6. Resultado final: **415 de 546 repos re-clonados analizados con éxito por SonarQube** (223 académico, 192 control).
+- Hallazgo: SonarQube **confirma de forma independiente** el hallazgo central (complejidad significativamente más baja en académico: δ=-0.458 ciclomática, δ=-0.426 cognitiva, ambas p<10⁻¹²) y agrega el `sqale_debt_ratio` real (la métrica de deuda técnica que la sustitución original no podía reproducir): también más bajo en académico (δ=-0.142, p=0.025). Único punto de discrepancia real: SonarQube encuentra duplicación significativamente MÁS ALTA en académico (δ=+0.181, p=0.003), al revés del resultado nulo de jscpd -- se reporta como discrepancia honesta entre herramientas, no se fuerza a que coincidan. Se generaron los 10 tipos de code smell reales por grupo (la Fig. 4 que pedía la ficha literalmente) y se reemplazó la figura adaptada anterior.
+- Manuscrito actualizado: abstract, metodología (nueva subsección "SonarQube corroboration"), resultados (nueva Tabla 2 + Fig. 4 real), discusión (2 párrafos nuevos), limitaciones (reescritas), conclusión. Word regenerado y verificado en Word real.
+- Bloqueado en: nada.
+- Siguiente: sigue pendiente del audit general: Tabla 1 (composición de muestra por país/lenguaje) y columna IQR en la tabla de métricas -- no se tocó en esta sesión, son gaps distintos ya documentados.
+- Tiempo de computo consumido: ~4-5 horas (mayormente corrida en segundo plano, sin bloquear al usuario)

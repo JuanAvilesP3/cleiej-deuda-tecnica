@@ -1,0 +1,4 @@
+term,coef,p_value
+group_academic (no controla edad),-0.997638877538583,8.144452945455461e-14
+group_academic (controla log-vida util),-0.9746727432598873,5.294238309171753e-13
+log_lifespan,-0.04094161029775572,0.272265951387544

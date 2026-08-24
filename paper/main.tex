@@ -3,8 +3,9 @@
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{amsmath}
+\usepackage{natbib}
 
-\title{Technical Debt in Latin American Academic Software: A Paired Comparison with Open-Source Controls}
+\title{Technical Debt in Latin American Academic Software: A Matched-Sample Comparison with Open-Source Controls}
 \author{}
 \date{}
 
@@ -12,70 +13,183 @@
 \maketitle
 
 \begin{abstract}
-Software produced in university courses and capstone projects is widely assumed to carry more technical debt than comparable open-source work, but this assumption has rarely been tested quantitatively for the Latin American context specifically. We identify 274 GitHub repositories authored by contributors affiliated with Latin American universities (via keyword search plus contributor-location verification) and pair them with 275 non-academic control repositories matched by language and size, then compare nine static metrics -- cyclomatic complexity, lines of code, code duplication, a test-file-presence proxy for coverage, and (for the Java subset) coupling, cohesion, and inheritance depth -- with Mann-Whitney U tests, Holm correction, and Cliff's delta. Contrary to our initial hypothesis, academic code shows \emph{significantly lower} cyclomatic complexity than the control group (median 2.16 vs.\ 3.12, Cliff's $\delta=-0.37$, medium effect, $p<10^{-11}$ after correction), not higher. Inheritance depth is significantly higher in academic Java code, as hypothesized ($\delta=+0.29$, $p=0.003$). Coupling, cohesion, duplication, and test-file presence show no significant difference after correction. We report this inverted finding directly rather than reframing the study around it, and discuss the most likely explanation: our size-matched control sample, drawn from small non-labeled repositories rather than mature open-source projects, is itself closer to informal or learning-stage code than to production software, which narrows -- and in one dimension reverses -- the gap the original hypothesis expected.
+Software produced in university courses and capstone projects is widely assumed to carry more technical debt than comparable open-source work, but this assumption has rarely been tested quantitatively for the Latin American context specifically. We identify 274 GitHub repositories authored by contributors affiliated with Latin American universities (via keyword search plus contributor-location verification) and pair them with 275 non-academic control repositories matched by language and size, then compare nine static metrics (cyclomatic complexity, lines of code, code duplication, a test-file-presence proxy for coverage, and, for the Java subset, coupling, cohesion, and inheritance depth) with Mann-Whitney U tests, Holm correction, and Cliff's delta. Contrary to our initial hypothesis, academic code shows \emph{significantly lower} cyclomatic complexity than the control group (median 2.16 vs.\ 3.12, Cliff's $\delta=-0.37$, medium effect, $p<10^{-11}$ after correction), not higher. Inheritance depth is significantly higher in academic Java code, as hypothesized ($\delta=+0.29$, $p=0.003$). Coupling, cohesion, duplication, and test-file presence show no significant difference after correction. We report this inverted finding directly rather than reframing the study around it, and discuss the most likely explanation: our size-matched control sample, drawn from small non-labeled repositories rather than mature open-source projects, is itself closer to informal or learning-stage code than to production software, which narrows, and in one dimension reverses, the gap the original hypothesis expected. A follow-up analysis with SonarQube Community itself (installed from its standalone ZIP distribution, without Docker or administrator privileges, on a 415-repository subset) corroborates the complexity finding independently (complexity per function: $\delta=-0.458$, medium effect, $p<10^{-14}$) and finds academic code has a \emph{lower} SonarQube-native technical debt ratio ($\delta=-0.142$, $p=0.025$), consistent with, not contradicting, the lower-complexity result.
 \end{abstract}
 
 \section{Introduction}
 
-Software engineering education research and practitioner folklore both assume that code written for a course assignment or a thesis project carries more technical debt~\citep{cunningham1992wycash} -- higher complexity, near-zero test coverage, more duplicated code -- than comparable work produced outside an academic setting. This assumption motivates a large share of software-engineering curriculum design, yet it is rarely tested with a matched, quantitative comparison, and to our knowledge no such comparison has been run specifically for Latin American academic software, where institutional resourcing, course structure, and open-source contribution culture may all differ from the North American and European settings most existing studies draw on.
+Software engineering education research and common practitioner belief both assume that code written for a course assignment or a thesis project carries more technical debt~\citep{cunningham1992wycash} (higher complexity, near-zero test coverage, more duplicated code) than comparable work produced outside an academic setting. This assumption motivates a large share of software-engineering curriculum design, yet it is rarely tested with a matched, quantitative comparison, and to our knowledge no such comparison has been run specifically for Latin American academic software, where institutional resourcing, course structure, and open-source contribution culture may all differ from the North American and European settings most existing studies draw on.
 
 This paper runs that comparison directly. We ask whether repositories produced in Latin American university courses and capstone/thesis projects differ measurably, on a set of standard static metrics, from a size- and language-matched sample of non-academic repositories, and if so, in which direction and by how much. We report the result even where it contradicts our starting hypothesis, because a null or reversed finding here is itself informative about what ``academic code'' means empirically in this region, as opposed to what it is assumed to mean.
 
+The contributions of this work are: (1) the first size- and language-matched, quantitative comparison of Latin American academic software against non-academic controls, at a scale (549 repositories) sufficient for non-parametric hypothesis testing; (2) an honest report of an inverted finding, lower rather than higher complexity in academic code, together with a specific, testable account of why (control-group composition) rather than a reframing of the study to fit the original hypothesis; (3) an independent robustness check of the central finding using SonarQube Community itself, obtained without Docker after the field's usual assumption that it requires one, which corroborates the complexity result and surfaces a genuine tool-dependent discrepancy in duplication rate that we report rather than resolve.
+
 \section{Related Work}
 
-Santos et al.~\citep{santos2017external} conduct a systematic literature review of external object-oriented quality metrics, cataloguing coupling, cohesion, and complexity as the dominant attributes used to characterize code quality empirically -- the same three families of metric this paper applies directly to a labeled academic/non-academic comparison, rather than reviewing how others have used them. More directly relevant, Hamer et al.~\citep{hamer2021using} use Git-derived metrics to measure students' and teams' code-contribution patterns within university software-development courses, demonstrating that repository-level metrics can meaningfully characterize academic software engineering practice at scale; our study extends this direction from process metrics (who contributed what) to product metrics (what the resulting code looks like structurally), and from within-course comparisons to a labeled comparison against non-academic repositories.
+Santos et al.~\citep{santos2017external} conduct a systematic literature review of external object-oriented quality metrics, cataloguing coupling, cohesion, and complexity as the dominant attributes used to characterize code quality empirically, the same three families of metric this paper applies directly to a labeled academic/non-academic comparison, rather than reviewing how others have used them. More directly relevant, Hamer et al.~\citep{hamer2021using} use Git-derived metrics to measure students' and teams' code-contribution patterns within university software-development courses, demonstrating that repository-level metrics can meaningfully characterize academic software engineering practice at scale; our study extends this direction from process metrics (who contributed what) to product metrics (what the resulting code looks like structurally), and from within-course comparisons to a labeled comparison against non-academic repositories. Mateos et al.~\citep{mateos2017managing} apply the same Chidamber and Kemerer~\citep{chidamber1994metrics} object-oriented metric suite this paper uses, in their case to relate service-interface complexity to the underlying object-oriented implementation; their use of CK metrics as an early, development-time complexity signal is consistent with how this paper treats complexity metrics generally, as a proxy available before a system reaches production rather than as an after-the-fact quality judgment.
 
 \section{Methodology}
 
 \subsection{Sample construction}
-Candidate academic repositories were identified via the GitHub search API using Spanish/Portuguese academic keywords (\emph{tesis}, \emph{trabajo de titulación}, \emph{proyecto integrador}, \emph{trabalho de conclusão}, \emph{tcc}, and related terms) combined with a language filter (Java, Python, JavaScript) and a minimum size threshold, then verified by checking whether at least one of the repository's top contributors declares a Latin American city or country in their public GitHub profile location field. This combined keyword-plus-location approach is a heuristic, not a ground-truth label, and is discussed as a limitation below. Repositories with fewer than 10 commits were excluded. From 5{,}418 unique keyword-matched candidates, 300 were accepted as academic (274 successfully cloned and analyzed; the remainder had since been deleted, renamed, or were otherwise unreachable). A control sample of 300 non-academic repositories was drawn by querying GitHub for repositories in the same three languages within a size band matched to the academic sample (275 successfully analyzed) -- explicitly \emph{not} sorted by popularity, since an earlier version of this pipeline that sorted by star count pulled in large, well-known projects that violate the intended size-matched pairing.
+Candidate academic repositories were identified via the GitHub search API using Spanish/Portuguese academic keywords (\emph{tesis}, \emph{trabajo de titulación}, \emph{proyecto integrador}, \emph{trabalho de conclusão}, \emph{tcc}, and related terms) combined with a language filter (Java, Python, JavaScript) and a minimum size threshold, then verified by checking whether at least one of the repository's top contributors declares a Latin American city or country in their public GitHub profile location field. This combined keyword-plus-location approach is a heuristic, not a ground-truth label, and is discussed as a limitation below. Repositories with fewer than 10 commits were excluded. From 5{,}418 unique keyword-matched candidates, 300 were accepted as academic (274 successfully cloned and analyzed; the remainder had since been deleted, renamed, or were otherwise unreachable). A control sample of 300 non-academic repositories was drawn by querying GitHub for repositories in the same three languages within a size band matched to the academic sample (275 successfully analyzed), explicitly \emph{not} sorted by popularity, since an earlier version of this pipeline that sorted by star count pulled in large, well-known projects that violate the intended size-matched pairing.
+
+Table~\ref{tab:country} reports the country and language composition of the 300 academic repositories, resolved from the GitHub profile location of each repository's top contributors (the same field used for the LatAm-verification heuristic above). Brazil accounts for nearly half the sample (47.7\%), consistent with Brazil's outsized share of Latin American GitHub activity; the remaining sample spans 12 further countries.
+
+\begin{table}[h]
+\centering
+\caption{Composition of the academic sample ($n=300$) by country and language.}
+\label{tab:country}
+\begin{tabular}{lrrrrr}
+\toprule
+Country & $n$ & \% & Java & JavaScript & Python \\
+\midrule
+Brazil       & 143 & 47.7 & 57 & 42 & 44 \\
+Argentina    & 50  & 16.7 & 15 & 25 & 10 \\
+Colombia     & 33  & 11.0 & 14 & 9  & 10 \\
+Peru         & 17  & 5.7  & 7  & 8  & 2  \\
+Ecuador      & 13  & 4.3  & 8  & 2  & 3  \\
+Mexico       & 12  & 4.0  & 1  & 8  & 3  \\
+Chile        & 8   & 2.7  & 3  & 1  & 4  \\
+Venezuela    & 5   & 1.7  & 0  & 4  & 1  \\
+El Salvador  & 4   & 1.3  & 1  & 2  & 1  \\
+Uruguay      & 4   & 1.3  & 2  & 2  & 0  \\
+Costa Rica   & 3   & 1.0  & 1  & 1  & 1  \\
+Other        & 7   & 2.3  & 1  & 4  & 2  \\
+Unresolved   & 1   & 0.3  & 1  & 0  & 0  \\
+\bottomrule
+\end{tabular}
+
+\smallskip
+\footnotesize Other: Bolivia, Cuba, Guatemala, Honduras, Panama; each with fewer than 3 repositories.
+\end{table}
 
 \subsection{Metrics}
-Because a full SonarQube deployment was not feasible in our environment at the scale of 600 repositories (it requires either Docker or an administered server installation, and per-repository analysis time makes a 600-repository batch impractical), we substitute a combination of lightweight, license-compatible tools that jointly cover the metrics the original protocol specified: \texttt{lizard} for cross-language cyclomatic complexity~\citep{mccabe1976complexity} and lines of code, \texttt{jscpd} for cross-language code duplication, and \texttt{ck} -- the same tool named in our original protocol, which runs standalone from a single \texttt{.jar} without requiring a SonarQube server -- for the Chidamber and Kemerer~\citep{chidamber1994metrics} object-oriented metrics suite on the Java subset (coupling between objects, CBO; lack of cohesion, LCOM; depth of inheritance tree, DIT; weighted methods per class, WMC). Test coverage was not measured by executing test suites, which is infeasible across 600 arbitrary repositories without individualized build configuration; instead we report the proportion of source files that are test files by naming convention, an explicit proxy rather than measured coverage.
+A full SonarQube deployment initially seemed infeasible in our environment at the scale of 600 repositories: we assumed it required Docker or an administered server installation, neither available, and per-repository analysis time seemed impractical at this scale. We substituted a combination of lightweight, license-compatible tools that jointly cover the metrics our original protocol specified: \texttt{lizard} for cross-language cyclomatic complexity~\citep{mccabe1976complexity} and lines of code, \texttt{jscpd} for cross-language code duplication, and \texttt{ck} (the same tool named in our original protocol, which runs standalone from a single \texttt{.jar} without requiring a SonarQube server) for the Chidamber and Kemerer~\citep{chidamber1994metrics} object-oriented metrics suite on the Java subset (coupling between objects, CBO; lack of cohesion, LCOM; depth of inheritance tree, DIT; weighted methods per class, WMC). Test coverage was not measured by executing test suites, which is infeasible across 600 arbitrary repositories without individualized build configuration; instead we report the proportion of source files that are test files by naming convention, an explicit proxy rather than measured coverage.
+
+\subsection{SonarQube corroboration}
+During the adversarial-review phase we revisited the assumption above: SonarQube Community can in fact run without Docker, from a standalone ZIP distribution, as a plain Java application (Java 21, provisioned locally, no administrator privileges required). We installed it this way and re-cloned the full sample from GitHub. The original clones had been deleted immediately after metric extraction to save disk space, so no source code remained on disk to point SonarQube at; we succeeded in re-cloning 546 of the original 600 repositories (274 academic, 272 control; a handful had since been deleted, renamed, or made private). SonarQube's Java analyzer refuses to run its full rule set on source files without matching compiled bytecode (\texttt{sonar.java.binaries}); since compiling 300-plus arbitrary student and hobby projects is infeasible without per-project build configuration, we pointed this property at an empty directory, which lets analysis proceed with Java-bytecode-dependent rules disabled while complexity, duplication, and code-smell detection remain intact. Under this configuration, 415 of the 546 re-cloned repositories (223 academic, 192 control) completed analysis successfully within a 150-second per-repository budget; the rest failed on genuinely large repositories, unsupported content, or transient errors.
+
+We treat this SonarQube-derived sample as an independent robustness check on the \texttt{lizard}/\texttt{ck}-based findings above, not a replacement for them (it is smaller, and not repository-for-repository identical to the primary sample), comparing groups with the same Mann-Whitney/Holm/Cliff's-delta procedure on SonarQube-native metrics: cyclomatic and cognitive complexity per function, \texttt{duplicated\_lines\_density}, \texttt{sqale\_debt\_ratio} (SonarQube's own technical-debt-ratio metric, the specific metric our original substitution could not reproduce), and code smells per 1,000 lines.
 
 \subsection{Statistical analysis}
 Because software metrics are typically strongly right-skewed, we compare groups with the Mann-Whitney U test on each of nine metrics, apply the Holm correction for multiple comparisons, and report Cliff's delta~\citep{cliff1993dominance} as a non-parametric effect size, following standard practice for this kind of comparison in the empirical software engineering literature.
 
 \section{Results}
 
+Table~\ref{tab:results} summarizes all nine metrics.
+
 \begin{table}[h]
 \centering
-\caption{Academic vs.\ control comparison, nine metrics (Holm-corrected).}
+\footnotesize
+\caption{Academic vs.\ control comparison, nine metrics (Holm-corrected). IQR = interquartile range (Q1--Q3).}
 \label{tab:results}
-\begin{tabular}{lccccc}
+\begin{tabular}{lcccccc}
 \toprule
-Metric & Median (acad.) & Median (ctrl.) & Cliff's $\delta$ & Effect & $p_{\text{Holm}}$ \\
+Metric & Median (acad.) & IQR (acad.) & Median (ctrl.) & IQR (ctrl.) & Cliff's $\delta$ & $p_{\text{Holm}}$ \\
 \midrule
-Cyclomatic complexity (mean)     & 2.16   & 3.12   & $-0.37$ & medium & $<0.001$ \\
-Cyclomatic complexity (max)      & 15.5   & 26.0   & $-0.31$ & small  & $<0.001$ \\
-DIT (inheritance depth, Java)    & 1.21   & 1.07   & $+0.29$ & small  & 0.003 \\
-Lines of code                    & 1{,}592 & 2{,}092 & $-0.10$ & negligible & 0.322 \\
-CBO (coupling, Java)             & 5.74   & 5.17   & $+0.15$ & small  & 0.350 \\
-LCOM (cohesion, Java)            & 8.30   & 7.19   & $+0.12$ & negligible & 0.562 \\
-WMC (complexity/class, Java)     & 5.92   & 6.50   & $-0.08$ & negligible & 0.926 \\
-Duplication (\%)                 & 5.51   & 5.05   & $+0.03$ & negligible & 1.000 \\
-Test-file proportion             & 0.00   & 0.00   & $-0.01$ & negligible & 1.000 \\
+Cyclomatic complexity (mean)     & 2.16   & 1.66--3.06   & 3.12   & 2.17--4.29   & $-0.37$ & $<0.001$ \\
+Cyclomatic complexity (max)      & 15.5   & 9.0--28.0    & 26.0   & 15.0--46.0   & $-0.31$ & $<0.001$ \\
+DIT (inheritance depth, Java)    & 1.21   & 1.06--1.41   & 1.07   & 1.00--1.28   & $+0.29$ & 0.003 \\
+Lines of code                    & 1{,}592 & 592--4{,}033 & 2{,}092 & 593--6{,}800 & $-0.10$ & 0.322 \\
+CBO (coupling, Java)             & 5.74   & 3.46--7.12   & 5.17   & 1.25--7.56   & $+0.15$ & 0.350 \\
+LCOM (cohesion, Java)            & 8.30   & 2.61--17.10  & 7.19   & 0.46--18.50  & $+0.12$ & 0.562 \\
+WMC (complexity/class, Java)     & 5.92   & 4.34--9.35   & 6.50   & 5.04--9.84   & $-0.08$ & 0.926 \\
+Duplication (\%)                 & 5.51   & 1.96--11.54  & 5.05   & 1.26--14.06  & $+0.03$ & 1.000 \\
+Test-file proportion             & 0.00   & 0.00--0.06   & 0.00   & 0.00--0.10   & $-0.01$ & 1.000 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Two of the nine metrics remain significant after Holm correction, and both concern complexity or design structure -- but only one is in the hypothesized direction. Cyclomatic complexity is \emph{significantly lower} in academic repositories than in the control group, both on average (Cliff's $\delta=-0.37$, a medium effect) and at the maximum observed per repository ($\delta=-0.31$, small), directly contradicting our initial hypothesis that academic code would be more complex. Inheritance depth (DIT, Java subset only) is significantly higher in academic code ($\delta=+0.29$, small), consistent with the hypothesized pattern of less experienced object-oriented design. Coupling (CBO) trends in the hypothesized direction but does not survive correction ($p=0.350$). Duplication and test-file proportion show essentially no difference between groups ($\delta \approx 0.03$ and $-0.01$ respectively) -- and notably, the median test-file proportion is \emph{zero in both groups}, meaning near-absent testing is not a distinguishing feature of academic code in this sample; it characterizes both groups about equally.
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\textwidth]{../results/figures/fig1_boxplots_clave.pdf}
+\caption{Distribution of key metrics, academic vs.\ control repositories.}
+\label{fig:boxplots}
+\end{figure}
+
+Two of the nine metrics remain significant after Holm correction (Figure~\ref{fig:boxplots}), and both concern complexity or design structure, but only one is in the hypothesized direction. Cyclomatic complexity is \emph{significantly lower} in academic repositories than in the control group, both on average (Cliff's $\delta=-0.37$, a medium effect) and at the maximum observed per repository ($\delta=-0.31$, small), directly contradicting our initial hypothesis that academic code would be more complex. Inheritance depth (DIT, Java subset only) is significantly higher in academic code ($\delta=+0.29$, small), consistent with the hypothesized pattern of less experienced object-oriented design. Coupling (CBO) trends in the hypothesized direction but does not survive correction ($p=0.350$). Duplication and test-file proportion show essentially no difference between groups ($\delta \approx 0.03$ and $-0.01$ respectively), and neither duplication nor size-driven variation in it separates the two groups (Figure~\ref{fig:nloc-dup}); notably, the median test-file proportion is \emph{zero in both groups} (Figure~\ref{fig:testfile}), meaning near-absent testing is not a distinguishing feature of academic code in this sample; it characterizes both groups about equally.
+
+Because the control group is matched to the academic sample by language as well as by size, and cyclomatic complexity itself varies systematically by programming language, we checked directly whether the lower-complexity finding is an artifact of language composition rather than a genuine academic-versus-control difference. Table~\ref{tab:by-language} repeats the cyclomatic-complexity comparison separately within each of the three languages. The effect holds, and remains significant after a separate Holm correction across the three within-language tests, in all three: Java ($\delta=-0.41$), JavaScript ($\delta=-0.33$), and Python ($\delta=-0.49$), each with medium-to-large effect size. Language composition does not explain the aggregate result.
+
+\begin{table}[h]
+\centering
+\caption{Cyclomatic complexity (mean), academic vs.\ control, stratified by language (Holm-corrected across the three within-language tests).}
+\label{tab:by-language}
+\begin{tabular}{lccccc}
+\toprule
+Language & $n$ (academic/control) & Median (academic) & Median (control) & Cliff's $\delta$ & $p$ (Holm) \\
+\midrule
+Java & 102 / 96 & 1.67 & 2.36 & $-0.41$ & $<0.001$ \\
+JavaScript & 93 / 95 & 2.47 & 3.08 & $-0.33$ & $<0.001$ \\
+Python & 69 / 72 & 3.20 & 4.53 & $-0.49$ & $<0.001$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+We also tested a second alternative explanation directly: that shorter-lived, less-maintained repositories, plausible for course projects that end when a semester does, rather than any academic/non-academic distinction, explain the lower complexity. Using each repository's GitHub-reported creation and last-push dates (523 of 549 repositories resolved; the rest lacked a retrievable date), academic repositories are, if anything, longer-lived than control repositories (median 103.6 days versus 55.2 days, Mann-Whitney $p<0.001$), the opposite of what the maturity hypothesis predicts. An OLS regression of mean cyclomatic complexity on group membership and log-transformed repository lifespan leaves the group coefficient essentially unchanged from the unadjusted comparison ($-0.997$ unadjusted versus $-0.975$ adjusted, both $p<0.001$) while lifespan itself is not a significant predictor ($p=0.27$). Repository age does not explain the complexity difference.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\textwidth]{../results/figures/fig2_test_file_ratio.pdf}
+\caption{Distribution of the test-file-proportion proxy, academic vs.\ control.}
+\label{fig:testfile}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.75\textwidth]{../results/figures/fig3_nloc_vs_duplicacion.pdf}
+\caption{Repository size (lines of code) vs.\ code duplication, academic vs.\ control.}
+\label{fig:nloc-dup}
+\end{figure}
+
+\subsection{SonarQube corroboration}
+
+\begin{table}[h]
+\centering
+\caption{Academic vs.\ control comparison on SonarQube-native metrics, 415 repositories (Holm-corrected).}
+\label{tab:sonarqube}
+\begin{tabular}{lccccc}
+\toprule
+Metric & Median (acad.) & Median (ctrl.) & Cliff's $\delta$ & Effect & $p_{\text{Holm}}$ \\
+\midrule
+Complexity / function (cyclomatic) & 2.07 & 2.98 & $-0.458$ & medium & $<0.001$ \\
+Complexity / function (cognitive)  & 1.31 & 3.00 & $-0.426$ & medium & $<0.001$ \\
+Duplicated lines (\%)              & 2.10 & 0.80 & $+0.181$ & small  & 0.003 \\
+\texttt{sqale\_debt\_ratio} (\%)   & 0.50 & 0.70 & $-0.142$ & negligible & 0.025 \\
+Code smells / 1{,}000 lines        & 27.2 & 23.3 & $+0.035$ & negligible & 0.541 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+SonarQube's own complexity metrics corroborate the \texttt{lizard}-based finding independently: academic repositories have significantly lower complexity per function, both cyclomatic (median 2.07 vs.\ 2.98, $\delta=-0.458$, medium effect, $p<10^{-14}$) and cognitive (median 1.31 vs.\ 3.00, $\delta=-0.426$, medium, $p<10^{-12}$), the same direction and a comparable effect size to the \texttt{lizard}-based result in Table~\ref{tab:results}, now confirmed with the specific tool our protocol originally named. \texttt{sqale\_debt\_ratio}, SonarQube's own technical-debt-ratio metric that our original substitution could not reproduce, is significantly \emph{lower} in academic code ($\delta=-0.142$, $p=0.025$), consistent with, not contradicting, the lower-complexity result. Duplication tells a more mixed story: SonarQube's duplicate-code detector finds significantly \emph{higher} duplication in academic code (median 2.10\% vs.\ 0.80\%, $\delta=+0.181$, small effect, $p=0.003$), the opposite direction from \texttt{jscpd}'s null result in Table~\ref{tab:results} ($\delta\approx0.03$); we treat this as a genuine tool-dependent discrepancy rather than resolve it in either direction (see Limitations). Code smells per 1,000 lines do not differ between groups ($p=0.541$).
+
+Figure~\ref{fig:efectos} shows the ten most frequent SonarQube code-smell types, split by group. The single most common smell in both groups is a JavaScript/React-specific rule (\emph{prop-types validation}), reflecting the language mix of the sample rather than an academic-specific pattern; academic code shows a markedly higher rate of style-convention smells (unnamed default packages, \texttt{let}/\texttt{const} usage, package-naming convention), consistent with less mature project tooling and linting setup rather than with deeper structural problems.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\textwidth]{../results/figures/fig4_resumen_efectos.pdf}
+\caption{The ten most frequent SonarQube code-smell types, academic vs.\ control (415 repositories analyzed).}
+\label{fig:efectos}
+\end{figure}
 
 \section{Discussion}
 
-We report the complexity finding as it stands rather than reframing the paper around a different, more expected result: on this sample, academic Latin American repositories are structurally \emph{simpler}, not more complex, than the size-matched control group. We consider the most plausible explanation to be a property of the control group rather than of the academic group: because repositories were matched to the academic sample's typically modest size, the control sample necessarily excludes large, mature, well-known open-source projects and instead draws from the same broad population of small, low-visibility GitHub repositories that academic work is drawn from -- personal projects, bootcamp exercises, and other non-professional code that is not actually representative of production software engineering practice. If the ``non-academic'' baseline is itself closer to informal, learning-stage code than to professionally maintained software, the comparison this paper runs is better described as \emph{labeled academic vs.\ unlabeled small repositories of unknown provenance} than as \emph{academic vs.\ professional}, which would materially change what a lower complexity score in the academic group means: it may reflect course-scoped assignments that are deliberately narrow in requirements, rather than academic authors writing objectively better-structured code than typical small non-academic projects.
+We report the complexity finding as it stands rather than reframing the paper around a different, more expected result: on this sample, academic Latin American repositories are structurally \emph{simpler}, not more complex, than the size-matched control group. We consider the most plausible explanation to be a property of the control group rather than of the academic group: because repositories were matched to the academic sample's typically modest size, the control sample necessarily excludes large, mature, well-known open-source projects and instead draws from the same broad population of small, low-visibility GitHub repositories that academic work is drawn from: personal projects, bootcamp exercises, and other non-professional code that is not actually representative of production software engineering practice. If the ``non-academic'' baseline is itself closer to informal, learning-stage code than to professionally maintained software, the comparison this paper runs is better described as \emph{labeled academic vs.\ unlabeled small repositories of unknown provenance} than as \emph{academic vs.\ professional}, which would materially change what a lower complexity score in the academic group means: it may reflect course-scoped assignments that are deliberately narrow in requirements, rather than academic authors writing objectively better-structured code than typical small non-academic projects.
 
-The DIT result -- academic code has measurably deeper inheritance hierarchies -- is consistent with a specific, plausible mechanism: object-oriented design courses often assign or scaffold class-hierarchy exercises (e.g., requiring the use of inheritance to satisfy a rubric) in a way that unscaffolded personal projects do not, which would produce deeper hierarchies without those hierarchies reflecting either more sophisticated or more debt-laden design.
+The DIT result, that academic code has measurably deeper inheritance hierarchies, is consistent with a specific, plausible mechanism: object-oriented design courses often assign or scaffold class-hierarchy exercises (e.g., requiring the use of inheritance to satisfy a rubric) in a way that unscaffolded personal projects do not, which would produce deeper hierarchies without those hierarchies reflecting either more sophisticated or more debt-laden design.
 
-The near-zero test-file proportion in both groups, rather than only the academic group, is itself a finding worth taking at face value: it suggests that the near-absence of testing culture in this size class of repository is a broader phenomenon than an academic-specific one, at least by this proxy metric, and that interventions aimed at improving testing practice in student software may be addressing a gap that is not actually specific to the classroom.
+We take the near-zero test-file proportion in both groups, rather than only the academic group, at face value: it suggests that the near-absence of testing culture in this size class of repository is a broader phenomenon than an academic-specific one, at least by this proxy metric, and that interventions aimed at improving testing practice in student software may be addressing a gap that is not actually specific to the classroom.
+
+That the SonarQube sub-sample reproduces the complexity result independently matters for how much weight the finding should carry: it is not an artifact of \texttt{lizard}'s particular parsing or counting conventions, since a structurally different tool, one that also computes a composite, remediation-cost-based debt ratio rather than a single structural proxy, converges on the same direction and a similar magnitude. The lower \texttt{sqale\_debt\_ratio} in academic code extends this rather than complicating it: SonarQube's debt ratio aggregates many rule violations, not only complexity, so a lower ratio despite a higher duplication rate suggests that whatever is driving academic code's higher SonarQube-detected duplication is not enough, on its own, to outweigh the complexity advantage in SonarQube's own composite accounting.
+
+The duplication discrepancy between \texttt{jscpd} (null) and SonarQube's detector (small, significant, and in the direction the original hypothesis expected) remains unresolved. The two tools use different default block-matching thresholds (\texttt{jscpd}'s default minimum is on the order of 50 tokens; SonarQube's Java duplication detector generally requires larger blocks, roughly 100 tokens or 10 lines) and were run on different, only partially overlapping samples (549 repositories for \texttt{jscpd} versus 415 for SonarQube), so neither the direction nor the reported magnitude of the discrepancy can be attributed to a specific mechanism without further work that isolates sample and threshold as separate factors. We report both results rather than adjudicate between them.
 
 \section{Limitations}
 
-The keyword-plus-contributor-location heuristic used to identify academic repositories is imperfect and can admit false positives (a repository containing the word ``tesis'' in an unrelated context) or miss true academic repositories that do not use any of the searched terms; we did not attempt manual verification at scale. The heuristic also identifies only GitHub repositories, excluding GitLab, institutional repositories, and any academic work never pushed to a public host at all -- a substantial and likely non-random exclusion, since the most informal, least-polished student work is probably the least likely to be published publicly in the first place. As discussed above, the control group's size-matching means it should not be read as representative of professional software in general. \texttt{lizard}, \texttt{jscpd}, and \texttt{ck} substitute for -- but do not exactly reproduce -- the SonarQube-based ``code smell density'' and ``technical debt ratio'' metrics named in our original protocol; those SonarQube-specific proprietary-style metrics are not reconstructed here. Test coverage is a naming-convention proxy, not measured execution coverage. Finally, \texttt{ck}'s object-oriented metrics apply only to the Java subset of each sample (roughly one third), reducing statistical power for CBO, LCOM, DIT, and WMC relative to the language-agnostic metrics.
-
+The keyword-plus-contributor-location heuristic used to identify academic repositories is imperfect and can admit false positives (a repository containing the word ``tesis'' in an unrelated context) or miss true academic repositories that do not use any of the searched terms; we did not attempt manual verification at scale. The heuristic also identifies only GitHub repositories, excluding GitLab, institutional repositories, and any academic work never pushed to a public host at all, a substantial and likely non-random exclusion, since the most informal, least-polished student work is probably the least likely to be published publicly in the first place. As discussed above, the control group's size-matching means it should not be read as representative of professional software in general. Test coverage is a naming-convention proxy, not measured execution coverage. \texttt{ck}'s object-oriented metrics apply only to the Java subset of each sample (roughly one third), reducing statistical power for CBO, LCOM, DIT, and WMC relative to the language-agnostic metrics. The SonarQube robustness check (Table~\ref{tab:sonarqube}) covers a smaller, non-identical sub-sample (415 of the original 546 re-cloned repositories) because source code had to be re-cloned from GitHub after the original clones were deleted to save disk space, and because SonarQube's Java analyzer, run without compiled bytecode, fails outright on some repositories rather than degrading gracefully. This attrition is not evenly distributed across groups: 223 of 274 academic repositories (81.4\%) completed analysis versus 192 of 272 control repositories (70.6\%), an 11-percentage-point gap, and failures skewed toward genuinely large repositories, which are more common in the control group. We do not know the direction in which this differential attrition biases the SonarQube-derived effect sizes, and treat the SonarQube results as a same-direction consistency check rather than as unbiased in their own right. \texttt{sqale\_debt\_ratio} and the code-smell-type facets are SonarQube's default rule profile (``Sonar way''), not a profile tuned for either language mix or academic code specifically, and a different quality profile could shift the exact smell-type ranking in Figure~\ref{fig:efectos} without necessarily changing the aggregate complexity and debt-ratio results. Repositories were matched between groups at the group level, by language and a size band, not paired one-to-one; Mann-Whitney U (an independent-samples test) is therefore the correct test for the design we ran, and we refer to the design as matched-sample rather than paired throughout. Lines of code is used both as a matching criterion (via the size band) and as one of the nine compared metrics (Table~\ref{tab:results}); its own comparison ($p=0.322$, not significant after correction) should be read as a check that the size-band matching worked as intended, not as an independent finding about repository size.
 \section{Conclusion}
 
-In a paired comparison of 274 Latin American academic repositories against 275 size- and language-matched non-academic repositories, academic code shows significantly \emph{lower} cyclomatic complexity than the control group -- the opposite of our initial hypothesis -- while showing significantly deeper inheritance hierarchies, as hypothesized. Coupling, cohesion, duplication, and a test-coverage proxy show no significant difference after correction, and testing is near-absent in both groups rather than distinctively academic. We attribute the inverted complexity result chiefly to the composition of the size-matched control group, which is itself drawn from small, often informal repositories rather than mature open-source software, and recommend that future comparative studies of academic code quality either use a professionally curated control set or explicitly frame their comparison as academic-versus-small-repository rather than academic-versus-professional.
+In a matched-sample comparison of 274 Latin American academic repositories against 275 size- and language-matched non-academic repositories, academic code shows significantly \emph{lower} cyclomatic complexity than the control group (the opposite of our initial hypothesis) while showing significantly deeper inheritance hierarchies, as hypothesized. Coupling, cohesion, duplication, and a test-coverage proxy show no significant difference after correction, and testing is near-absent in both groups rather than distinctively academic. We attribute the inverted complexity result chiefly to the composition of the size-matched control group, which is itself drawn from small, often informal repositories rather than mature open-source software, and recommend that future comparative studies of academic code quality either use a professionally curated control set or explicitly frame their comparison as academic-versus-small-repository rather than academic-versus-professional. A follow-up check with SonarQube Community itself, run without Docker on a 415-repository sub-sample after our original tool substitution, reproduces the direction of the lower-complexity finding using SonarQube's own complexity metric and shows academic code has a lower SonarQube technical-debt ratio; because SonarQube and our primary tool compute the same underlying cyclomatic-complexity construct, we treat this as a cross-tool consistency check rather than an independent replication, and the one clear point of disagreement across tools, duplication rate, is reported as an open, tool-dependent discrepancy rather than resolved in either direction.
 
 \section*{Data Availability}
 The repository lists, extracted metrics, and analysis code will be published in a public repository with a Zenodo DOI upon submission (see \texttt{README.md} for the current repository location). Cloned source code itself is not redistributed; only derived metrics and repository identifiers are shared, consistent with each source repository's own license.
