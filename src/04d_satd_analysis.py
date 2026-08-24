@@ -93,8 +93,19 @@ def main():
 
     acad = df[df.group == "academico"]["satd_per_kloc"]
     ctrl = df[df.group == "control"]["satd_per_kloc"]
+    n_acad = df[df.group == "academico"]["n_satd"]
+    n_ctrl = df[df.group == "control"]["n_satd"]
     stat, p = mannwhitneyu(acad, ctrl, alternative="two-sided")
     delta = cliffs_delta(acad, ctrl)
+
+    # La mediana es cero en ambos grupos (la mayoria de repos no tiene ningun
+    # marcador SATD), asi que el resumen tambien reporta la proporcion de
+    # repos con AL MENOS un marcador, la media (sensible a outliers, a
+    # diferencia de Cliff's delta) y el maximo observado por grupo -- los
+    # numeros que el manuscrito cita en la seccion 4.4 ("Self-admitted
+    # technical debt") ademas de la mediana/IQR/delta/p ya calculados arriba.
+    pct_al_menos_uno_acad = (n_acad >= 1).mean() * 100
+    pct_al_menos_uno_ctrl = (n_ctrl >= 1).mean() * 100
 
     summary = pd.DataFrame([{
         "metric": "SATD comments per 1,000 lines of code",
@@ -107,9 +118,18 @@ def main():
         "cliffs_delta": delta,
         "mannwhitney_u": stat,
         "p_value": p,
+        "pct_con_al_menos_1_satd_academico": pct_al_menos_uno_acad,
+        "pct_con_al_menos_1_satd_control": pct_al_menos_uno_ctrl,
+        "media_academico": acad.mean(),
+        "media_control": ctrl.mean(),
+        "maximo_academico": acad.max(),
+        "maximo_control": ctrl.max(),
     }])
     print(summary.to_string(index=False))
     summary.to_csv(RESULTS_DIR / "satd_resumen.csv", index=False)
+    print(f"\nAl menos 1 marcador SATD: academico {pct_al_menos_uno_acad:.1f}% vs. control {pct_al_menos_uno_ctrl:.1f}%")
+    print(f"Media SATD/kloc: academico {acad.mean():.2f} vs. control {ctrl.mean():.2f} "
+          f"(maximo observado: academico {acad.max():.1f}, control {ctrl.max():.1f})")
     print(f"\nCompletado: {RESULTS_DIR}")
 
 
