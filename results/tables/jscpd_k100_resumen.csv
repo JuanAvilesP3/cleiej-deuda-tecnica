@@ -1,0 +1,2 @@
+metric,n_academico,n_control,median_academico,median_control,iqr_academico,iqr_control,cliffs_delta,mannwhitney_u,p_value
+"jscpd duplication %% (min-tokens=100, matching SonarQube's typical Java threshold)",223,192,1.7710583153347732,1.0962501729650909,0.35--6.06,0.10--3.95,0.12233744394618834,24027.0,0.030746997639357232
