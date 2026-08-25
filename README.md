@@ -9,14 +9,17 @@
 - [x] Experimento ejecutado (día 1) — métricas de complejidad, duplicación, cobertura (proxy), CK (solo Java)
 - [x] Estadística (día 1) — Mann-Whitney U + Holm + Cliff's delta
 - [x] Figuras generadas (4/4)
-- [ ] Redacción del manuscrito (día 2)
+- [x] Redacción del manuscrito (día 2) — `paper/main.tex` completo
 - [x] Endurecimiento: DOIs verificados
-- [ ] Endurecimiento: revisión adversarial ronda 1
-- [ ] Endurecimiento: revisión adversarial ronda 2
-- [ ] Revisión cruzada
-- [ ] Repositorio en GitHub
+- [x] Endurecimiento: revisión adversarial ronda 1
+- [x] Endurecimiento: revisión adversarial ronda 2 (correcciones reales aplicadas, no solo notas de limitación)
+- [x] Endurecimiento: auditoría de reproducibilidad (cada número citado verificado contra results/tables/ y src/; corregido un bug real de figura inexistente en main.tex)
+- [x] Métrica adicional: deuda técnica auto-declarada (SATD, comentarios TODO/FIXME)
+- [x] Word/PDF sincronizados y verificados palabra por palabra contra main.tex
+- [ ] Revisión cruzada (2 sep, la hace el otro practicante)
+- [ ] Repositorio en GitHub (repo local únicamente por ahora)
 - [ ] Publicado en Zenodo (DOI)
-- [ ] Carta de presentación y declaraciones
+- [x] Carta de presentación y declaraciones (borrador en `paper/cover_letter.md` y `paper/declaraciones.md`)
 - [ ] Entregado al responsable académico
 
 ## Protocolo
