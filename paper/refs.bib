@@ -104,3 +104,76 @@
   doi     = {10.1007/s10664-017-9512-6},
   url     = {https://doi.org/10.1007/s10664-017-9512-6}
 }
+
+% verificado 31/08/2026, DOI 10.1145/2901739.2901742 resuelve en Crossref:
+% Bavota, G., Russo, B. -- "A Large-Scale Empirical Study on Self-Admitted Technical Debt"
+% MSR 2016, pp. 315-326.
+% Primer estudio empirico a gran escala que minea comentarios TODO/FIXME en 159 proyectos
+% Apache y 118 de GitHub; cuantifica la prevalencia y las caracteristicas de los
+% desarrolladores que introducen SATD -- referencia directa para la subseccion
+% de SATD de este articulo y la base metodologica de nuestra busqueda de marcadores.
+@inproceedings{bavota2016satd,
+  author    = {Bavota, Gabriele and Russo, Barbara},
+  title     = {A Large-Scale Empirical Study on Self-Admitted Technical Debt},
+  booktitle = {Proceedings of the 13th International Conference on Mining Software Repositories (MSR)},
+  year      = {2016},
+  pages     = {315--326},
+  doi       = {10.1145/2901739.2901742},
+  url       = {https://doi.org/10.1145/2901739.2901742}
+}
+
+% verificado 31/08/2026, DOI 10.1109/MTD.2015.7332619 resuelve en Crossref:
+% Maldonado, E. da S., Shihab, E. -- "Detecting and Quantifying Different Types of Self-Admitted Technical Debt"
+% IEEE MTD 2015, pp. 9-15.
+% Introduce la taxonomia de cinco tipos de SATD (deuda de diseno, defecto, codigo,
+% prueba y documentacion) a partir de mineria de comentarios en proyectos Apache;
+% es la clasificacion de referencia que fundamenta nuestra busqueda de marcadores
+% TODO/FIXME/HACK en los repositorios academicos y de control.
+@inproceedings{maldonado2015satd,
+  author    = {Maldonado, Everton da S. and Shihab, Emad},
+  title     = {Detecting and Quantifying Different Types of Self-Admitted Technical Debt},
+  booktitle = {Proceedings of the 7th IEEE International Workshop on Managing Technical Debt (MTD)},
+  year      = {2015},
+  pages     = {9--15},
+  doi       = {10.1109/MTD.2015.7332619},
+  url       = {https://doi.org/10.1109/MTD.2015.7332619}
+}
+
+% verificado 31/08/2026, DOI 10.1007/s10664-017-9522-4 resuelve en Crossref:
+% Huang, Q., Shihab, E., Xia, X., Lo, D., Li, S. --
+% "Identifying Self-Admitted Technical Debt in Open Source Projects Using Text Mining"
+% Empirical Software Engineering, vol. 23, pp. 418-451, 2018.
+% Propone un modelo de text mining (SVM, NB, MaxEnt) que supera la deteccion
+% manual de SATD; su definicion de marcadores de deuda autoadmitida y el
+% metodo de mineria de comentarios son la base directa de la seccion 3.4 de
+% este articulo (SATD: scaner de comentarios con TODO/FIXME/HACK/XXX/BUG).
+@article{huang2018satd,
+  author  = {Huang, Qiao and Shihab, Emad and Xia, Xin and Lo, David and Li, Shanping},
+  title   = {Identifying Self-Admitted Technical Debt in Open Source Projects Using Text Mining},
+  journal = {Empirical Software Engineering},
+  year    = {2018},
+  volume  = {23},
+  number  = {1},
+  pages   = {418--451},
+  doi     = {10.1007/s10664-017-9522-4},
+  url     = {https://doi.org/10.1007/s10664-017-9522-4}
+}
+
+% verificado 31/08/2026, DOI 10.1007/s10664-020-09869-w resuelve en Crossref:
+% Amanatidis, T., Mittas, N., Moschou, A. --
+% "Evaluating the Agreement Among Technical Debt Measurement Tools:
+%  Building an Empirical Benchmark of Technical Debt Liabilities"
+% Empirical Software Engineering, vol. 25, pp. 4161-4204, 2020.
+% Compara SonarQube, CAST y otras herramientas automaticas de medicion de TD;
+% justifica el uso de SonarQube como estandar de facto y contextualiza la
+% discrepancia entre herramientas que reportamos en la subseccion de corroboracion.
+@article{amanatidis2020td,
+  author  = {Amanatidis, Theodoros and Mittas, Nikolaos and Moschou, Alexandros and Chatzigeorgiou, Alexander and Ampatzoglou, Apostolos and Angelis, Lefteris},
+  title   = {Evaluating the Agreement Among Technical Debt Measurement Tools: Building an Empirical Benchmark of Technical Debt Liabilities},
+  journal = {Empirical Software Engineering},
+  year    = {2020},
+  volume  = {25},
+  pages   = {4161--4204},
+  doi     = {10.1007/s10664-020-09869-w},
+  url     = {https://doi.org/10.1007/s10664-020-09869-w}
+}
