@@ -30,14 +30,26 @@ RESULTS_DIR = Path(__file__).resolve().parent.parent / "results" / "tables"
 FIG_DIR = Path(__file__).resolve().parent.parent / "results" / "figures"
 
 GROUP_COLORS = {"academico": COLORS["primary"], "control": COLORS["secondary"]}
-GROUP_LABELS = {"academico": "Académico", "control": "Control"}
+GROUP_LABELS = {"academico": "Academic", "control": "Control"}
+
+ENGLISH_METRIC_LABELS = {
+    "Complejidad ciclomática (media)": "Cyclomatic complexity (mean)",
+    "Complejidad ciclomática (máxima)": "Cyclomatic complexity (max)",
+    "DIT (profundidad herencia, solo Java)": "DIT (inheritance depth, Java)",
+    "Líneas de código": "Lines of code (NLOC)",
+    "CBO (acoplamiento, solo Java)": "CBO (coupling, Java)",
+    "LCOM (falta de cohesión, solo Java)": "LCOM (cohesion, Java)",
+    "WMC (complejidad por clase, solo Java)": "WMC (complexity/class, Java)",
+    "% duplicación": "Duplication (%)",
+    "Proporción de archivos de test": "Test-file proportion",
+}
 
 
 def fig1_boxplots_clave(df):
     metrics = ["cc_mean", "cc_max", "duplication_pct", "dit_mean"]
-    labels = ["Complejidad\n(media)", "Complejidad\n(máxima)", "% duplicación", "DIT\n(solo Java)"]
+    labels = ["Complexity\n(mean)", "Complexity\n(max)", "Duplication\n(%)", "DIT\n(Java only)"]
 
-    fig, axes = plt.subplots(1, 4, figsize=(13, 5))
+    fig, axes = plt.subplots(1, 4, figsize=(11, 4.5))
     for ax, metric, label in zip(axes, metrics, labels):
         data = [df[df.group == g][metric].dropna().values for g in ["academico", "control"]]
         bp = ax.boxplot(data, patch_artist=True, showfliers=False, widths=0.5)
@@ -48,29 +60,27 @@ def fig1_boxplots_clave(df):
             median.set_color("black")
         ax.set_xticks([1, 2])
         ax.set_xticklabels([GROUP_LABELS["academico"], GROUP_LABELS["control"]])
-        ax.set_title(label, fontsize=10)
+        ax.set_title(label, fontsize=9.5)
 
-    fig.suptitle("Fig. 1 — Métricas clave, académico vs. control", fontsize=12)
     save_figure(fig, FIG_DIR / "fig1_boxplots_clave")
     plt.close(fig)
 
 
 def fig2_test_file_ratio(df):
-    fig, ax = plt.subplots(figsize=(8, 5.5))
+    fig, ax = plt.subplots(figsize=(7, 4.5))
     bins = np.linspace(0, max(df["test_file_ratio"].max(), 0.1), 25)
     for g, color in GROUP_COLORS.items():
         ax.hist(df[df.group == g]["test_file_ratio"].dropna(), bins=bins, alpha=0.6,
                  color=color, label=GROUP_LABELS[g], density=True)
-    ax.set_xlabel("Proporción de archivos que son archivos de prueba")
-    ax.set_ylabel("Densidad")
-    ax.set_title("Fig. 2 — Distribución de la proporción de archivos de test")
+    ax.set_xlabel("Proportion of test files")
+    ax.set_ylabel("Density")
     ax.legend(fontsize=9)
     save_figure(fig, FIG_DIR / "fig2_distribucion_tests")
     plt.close(fig)
 
 
 def fig3_nloc_vs_duplicacion(df):
-    fig, ax = plt.subplots(figsize=(8.5, 6))
+    fig, ax = plt.subplots(figsize=(7.5, 5))
     for g, color in GROUP_COLORS.items():
         sub = df[df.group == g].dropna(subset=["nloc_total", "duplication_pct"])
         ax.scatter(sub["nloc_total"], sub["duplication_pct"], color=color, alpha=0.5, s=25, label=GROUP_LABELS[g])
@@ -82,24 +92,24 @@ def fig3_nloc_vs_duplicacion(df):
             ax.plot(xs, np.polyval(coef, np.log10(xs + 1)), color=color, linewidth=2)
 
     ax.set_xscale("log")
-    ax.set_xlabel("Líneas de código (NLOC, escala log)")
-    ax.set_ylabel("% duplicación")
-    ax.set_title("Fig. 3 — Tamaño vs. duplicación (proxy de deuda técnica)")
+    ax.set_xlabel("Lines of code (NLOC, log scale)")
+    ax.set_ylabel("Duplication (%)")
     ax.legend(fontsize=9)
     save_figure(fig, FIG_DIR / "fig3_nloc_vs_duplicacion")
     plt.close(fig)
 
 
 def fig4_resumen_efectos(mw):
+    mw = mw.copy()
+    mw["label_en"] = mw["label"].map(lambda x: ENGLISH_METRIC_LABELS.get(x, x))
     mw = mw.sort_values("cliffs_delta")
-    fig, ax = plt.subplots(figsize=(9, 6))
+    fig, ax = plt.subplots(figsize=(8, 5))
     colors = [COLORS["primary"] if sig else COLORS["accent"] for sig in mw["significativo_holm_0.05"]]
-    ax.barh(mw["label"], mw["cliffs_delta"], color=colors)
+    ax.barh(mw["label_en"], mw["cliffs_delta"], color=colors)
     ax.axvline(0, color="grey", linewidth=0.8)
     for thresh in (-0.474, -0.33, -0.147, 0.147, 0.33, 0.474):
         ax.axvline(thresh, color="grey", linewidth=0.5, linestyle=":", alpha=0.5)
-    ax.set_xlabel("Cliff's delta (académico − control)")
-    ax.set_title("Fig. 4 — Tamaño del efecto por métrica (oscuro = significativo, Holm p<0.05)")
+    ax.set_xlabel("Cliff's delta (academic − control)")
     save_figure(fig, FIG_DIR / "fig4_resumen_efectos")
     plt.close(fig)
 

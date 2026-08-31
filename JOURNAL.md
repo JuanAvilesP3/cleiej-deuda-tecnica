@@ -1,11 +1,16 @@
 # Ficha de revista — CLEI Electronic Journal (CLEIej)
 
-- **URL de la revista:** clei.org/cleiej
-- **URL del sistema de envío:** por localizar
-- **Indexación (Scopus/WoS/otro):** por verificar
-- **¿Cobra APC?** No — verificado 24/08/2026: "does not apply any author charges whatsoever for submitting and publishing."
-- **Plantilla oficial descargada:** No — clase LaTeX propia (`cleiej`) recomendada, no descargada aún. El `main.tex` actual usa la clase genérica `article`, no `cleiej`.
-- **Formato exigido:** LaTeX, estilo article a una columna, 10pt; clase `cleiej` recomendada (no estrictamente obligatoria según lo encontrado, a diferencia de AGH en P10). **Estilo de citas recomendado: IEEEtran BibTeX.** El manuscrito actual usa natbib estilo autor-año; revisar si el cambio de clase/estilo es necesario antes del envío o si el formato actual es aceptable.
-- **Idiomas aceptados:** inglés, español y portugués
-- **Alcance / scope declarado:** CLEIej existe para dar visibilidad a la investigación en computación de América Latina — ese encaje debe ser explícito en la introducción del manuscrito, no implícito.
-- **Notas:** Buscar en su archivo trabajos de ingeniería de software empírica, calidad de código y educación en computación para las 3–5 citas obligatorias.
+- **URL de la revista:** https://clei.org/cleiej
+- **URL del sistema de envío:** https://clei.org/cleiej/index.php/cleiej/about/submissions
+- **Indexación (Scopus/WoS/otro):** Scopus (CiteScore 1.2), DOAJ, Latindex Catálogo 2.0, Redalyc, DBLP, Google Scholar.
+- **¿Cobra APC?** **NO — $0 USD (100% gratuita)**. Verificado en las directrices de CLEIej: *"does not apply any author charges whatsoever for submitting and publishing."*
+- **Plantilla oficial descargada:** **SÍ — Verificada e integrada**. La clase oficial `cleiej.cls`, el archivo de estilo `IEEEtran.bst` y el banner institucional `cleiejbanner.jpg` están integrados en `paper/`. El manuscrito `main.tex` compila limpiamente bajo `cleiej.cls`.
+- **Formato exigido:** LaTeX con clase `cleiej`, tipografía 10pt, estilo de citas numérico IEEEtran (`[1], [2]...`).
+- **Idiomas aceptados:** Inglés, español y portugués (manuscrito redactado en inglés).
+- **Alcance / scope declarado:** Órgano oficial del Centro Latinoamericano de Estudios en Informática (CLEI) para la difusión de investigación de alta calidad en computación e ingeniería de software en América Latina. El encaje con repositorios de 13 países de la región está explícito en el manuscrito y la cover letter.
+- **Citas de CLEIej incluidas:** 3 citas a artículos de la revista sobre métricas de calidad y repositorios de software (*Santos et al. 2017, Hamer et al. 2021, Mateos et al. 2017*).
+- **Estado de preparación:**
+  - [x] Manuscrito en LaTeX adaptado a `cleiej.cls` y compilado a PDF (`P9_CLEIej_manuscript.pdf`).
+  - [x] Figuras vectoriales con etiquetas en inglés y datos estadísticos íntegros.
+  - [x] Declaraciones éticas completas (`paper/declaraciones.md`): Uso de IA, CRediT, datos y conflicto de intereses.
+  - [x] Carta de presentación completa (`paper/cover_letter.md`) con 3 revisores pares sugeridos.
