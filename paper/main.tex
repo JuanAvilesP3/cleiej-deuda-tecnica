@@ -1,21 +1,32 @@
-\documentclass[10pt]{article}
+\documentclass{cleiej}
 \usepackage[utf8]{inputenc}
-\usepackage[margin=1in]{geometry}
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{amsmath}
-\usepackage[numbers,sort&compress]{natbib}
+\usepackage{cite}
+\usepackage{hyperref}
+
+\fancyhead[CO]{CLEI ELECTRONIC JOURNAL, VOLUME 29, ISSUE 4, PAPER 0, AUGUST 2026}
+
+\providecommand{\citep}[1]{\cite{#1}}
+\providecommand{\citet}[1]{\cite{#1}}
 
 \title{Technical Debt in Latin American Academic Software: A Matched-Sample Comparison with Open-Source Controls}
-\author{}
-\date{}
+\author{
+Author Name \\
+Department / Faculty \\
+Institution Name, City, Country \\
+\it author@email.edu
+}
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-Software produced in university courses and capstone projects is widely assumed to carry more technical debt than comparable open-source work, but this assumption has rarely been tested quantitatively for the Latin American context specifically. We identify 274 GitHub repositories authored by contributors affiliated with Latin American universities (via keyword search plus contributor-location verification) and pair them with 275 non-academic control repositories matched by language and size, then compare nine static metrics (cyclomatic complexity, lines of code, code duplication, a test-file-presence proxy for coverage, and, for the Java subset, coupling, cohesion, and inheritance depth) with Mann-Whitney U tests, Holm correction, and Cliff's delta. Contrary to our initial hypothesis, academic code shows \emph{significantly lower} cyclomatic complexity than the control group (median 2.16 vs.\ 3.12, Cliff's $\delta=-0.37$, medium effect, $p<10^{-11}$ after correction), not higher. Inheritance depth is significantly higher in academic Java code, as hypothesized ($\delta=+0.29$, $p=0.003$). Coupling, cohesion, duplication, and test-file presence show no significant difference after correction. We report this inverted finding directly rather than reframing the study around it, and discuss the most likely explanation: our size-matched control sample, drawn from small non-labeled repositories rather than mature open-source projects, is itself closer to informal or learning-stage code than to production software, which narrows, and in one dimension reverses, the gap the original hypothesis expected. A follow-up analysis with SonarQube Community itself (installed from its standalone ZIP distribution, without Docker or administrator privileges, on a 415-repository subset) corroborates the complexity finding independently (complexity per function: $\delta=-0.458$, medium effect, $p<10^{-14}$) and finds academic code has a \emph{lower} SonarQube-native technical debt ratio ($\delta=-0.142$, $p=0.025$), consistent with, not contradicting, the lower-complexity result. On the same sub-sample, a self-admitted technical debt (SATD) comment count (\texttt{TODO}/\texttt{FIXME}-style markers) runs in the direction the original hypothesis expected: academic repositories more often contain at least one such marker than control repositories do (42.2\% vs.\ 23.0\%, Cliff's $\delta=+0.190$, $p<0.001$), even though the underlying code is structurally simpler.
+\noindent Software produced in university courses and capstone projects is widely assumed to carry more technical debt than comparable open-source work, but this assumption has rarely been tested quantitatively for the Latin American context specifically. We identify 274 GitHub repositories authored by contributors affiliated with Latin American universities (via keyword search plus contributor-location verification) and pair them with 275 non-academic control repositories matched by language and size, then compare nine static metrics (cyclomatic complexity, lines of code, code duplication, a test-file-presence proxy for coverage, and, for the Java subset, coupling, cohesion, and inheritance depth) with Mann-Whitney U tests, Holm correction, and Cliff's delta. Contrary to our initial hypothesis, academic code shows \emph{significantly lower} cyclomatic complexity than the control group (median 2.16 vs.\ 3.12, Cliff's $\delta=-0.37$, medium effect, $p<10^{-11}$ after correction), not higher. Inheritance depth is significantly higher in academic Java code, as hypothesized ($\delta=+0.29$, $p=0.003$). Coupling, cohesion, duplication, and test-file presence show no significant difference after correction. We report this inverted finding directly rather than reframing the study around it, and discuss the most likely explanation: our size-matched control sample, drawn from small non-labeled repositories rather than mature open-source projects, is itself closer to informal or learning-stage code than to production software, which narrows, and in one dimension reverses, the gap the original hypothesis expected. A follow-up analysis with SonarQube Community itself (installed from its standalone ZIP distribution, without Docker or administrator privileges, on a 415-repository subset) corroborates the complexity finding independently (complexity per function: $\delta=-0.458$, medium effect, $p<10^{-14}$) and finds academic code has a \emph{lower} SonarQube-native technical debt ratio ($\delta=-0.142$, $p=0.025$), consistent with, not contradicting, the lower-complexity result. On the same sub-sample, a self-admitted technical debt (SATD) comment count (\texttt{TODO}/\texttt{FIXME}-style markers) runs in the direction the original hypothesis expected: academic repositories more often contain at least one such marker than control repositories do (42.2\% vs.\ 23.0\%, Cliff's $\delta=+0.190$, $p<0.001$), even though the underlying code is structurally simpler.
 \end{abstract}
+
+\keywords{Technical debt, software engineering education, empirical software engineering, Latin American software, code complexity, GitHub mining.}
 
 \section{Introduction}
 
@@ -199,7 +210,7 @@ In a matched-sample comparison of 274 Latin American academic repositories again
 \section*{Data Availability}
 The repository lists, extracted metrics, and analysis code will be published in a public repository with a Zenodo DOI upon submission (see \texttt{README.md} for the current repository location). Cloned source code itself is not redistributed; only derived metrics and repository identifiers are shared, consistent with each source repository's own license.
 
-\bibliographystyle{ieeetr}
+\bibliographystyle{IEEEtran}
 \bibliography{refs}
 
 \end{document}

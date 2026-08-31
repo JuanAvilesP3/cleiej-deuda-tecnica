@@ -31,6 +31,8 @@ import pandas as pd
 
 RAW_DIR = Path(__file__).resolve().parent.parent / "data" / "raw"
 RESULTS_DIR = Path(__file__).resolve().parent.parent / "results" / "tables"
+RANDOM_STATE = 42
+np.random.seed(RANDOM_STATE)
 
 METRICS = ["cc_mean", "cc_max", "nloc_total", "duplication_pct", "test_file_ratio",
            "cbo_mean", "lcom_mean", "dit_mean", "wmc_mean"]
