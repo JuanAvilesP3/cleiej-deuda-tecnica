@@ -5,6 +5,7 @@
 \usepackage{amsmath}
 \usepackage{cite}
 \usepackage{hyperref}
+\usepackage[labelfont=bf,labelsep=colon,justification=centering]{caption}
 
 \fancyhead[CO]{CLEI ELECTRONIC JOURNAL, VOLUME 29, ISSUE 4, PAPER 0, AUGUST 2026}
 
@@ -34,7 +35,7 @@ Software engineering education research and common practitioner belief both assu
 
 This paper runs that comparison directly. We ask whether repositories produced in Latin American university courses and capstone/thesis projects differ measurably, on a set of standard static metrics, from a size- and language-matched sample of non-academic repositories, and if so, in which direction and by how much. We report the result even where it contradicts our starting hypothesis, because a null or reversed finding here is itself informative about what ``academic code'' means empirically in this region, as opposed to what it is assumed to mean.
 
-The contributions of this work are: (1) the first size- and language-matched, quantitative comparison of Latin American academic software against non-academic controls, at a scale (549 repositories) sufficient for non-parametric hypothesis testing; (2) an honest report of an inverted finding, lower rather than higher complexity in academic code, together with a specific, testable account of why (control-group composition) rather than a reframing of the study to fit the original hypothesis; (3) an independent robustness check of the central finding using SonarQube Community itself, obtained without Docker after the field's usual assumption that it requires one, which corroborates the complexity result and surfaces a genuine tool-dependent discrepancy in duplication rate that we report rather than resolve.
+The contributions of this work are: (1) a size- and language-matched quantitative comparison of Latin American academic software against non-academic controls, at a scale (549 repositories) sufficient for non-parametric hypothesis testing; (2) an honest report of an inverted finding, lower rather than higher complexity in academic code, together with a specific, testable account of why (control-group composition) rather than a reframing of the study to fit the original hypothesis; (3) an independent robustness check of the central finding using SonarQube Community itself, obtained without Docker after the field's usual assumption that it requires one, which corroborates the complexity result and surfaces a genuine tool-dependent discrepancy in duplication rate that we report rather than resolve.
 
 \section{Related Work}
 
@@ -44,7 +45,7 @@ Santos et al.~\citep{santos2017external} conduct a systematic literature review 
 
 
 
-The self-admitted technical debt analysis in Section~3.4 is grounded in a body of work that began with Bavota and Russo~\citep{bavota2016satd}, who conduct the first large-scale empirical study of SATD, mining 159 Apache projects and 118 GitHub repositories for \texttt{TODO}/\texttt{FIXME}-style comments and characterising the developers who introduce them; their finding that SATD is prevalent and not uniformly concentrated in low-quality code provides the baseline against which our own SATD prevalence figures (42.2\% academic vs.\ 23.0\% control) should be read. Maldonado and Shihab~\citep{maldonado2015satd} extend this by classifying SATD into five types (design, defect, code, test, and documentation debt), providing the conceptual vocabulary that underlies our keyword-based scan; our list of markers (\texttt{TODO}, \texttt{FIXME}, \texttt{HACK}, \texttt{XXX}, \texttt{BUG}) follows their operationalisation. Huang et al.~\citep{huang2018satd} subsequently show that text-mining classifiers (SVM, Na\"{i}ve Bayes, maximum entropy) can detect SATD in source comments with higher precision than simple keyword matching, and that the distribution of SATD types varies systematically by project; we use the simpler keyword approach because precision is less critical for our research question (is the \emph{prevalence} of any SATD marker different between academic and control repositories?) than for studies aimed at classifying SATD type.
+The self-admitted technical debt analysis in Section~3.4 is grounded in a body of work that began with Potdar and Shihab~\citep{potdar2014satd}, who conducted the first large-scale exploratory study of SATD, mining source comments for \texttt{TODO}/\texttt{FIXME}/\texttt{HACK} markers and establishing that such markers are prevalent in production code and correlate with higher cyclomatic complexity; their prevalence figures provide the baseline against which our own SATD rates (42.2\% academic vs.\ 23.0\% control) should be read. Bavota and Russo~\citep{bavota2016satd} extend this to a broader empirical study of SATD across 159 Apache projects and 118 GitHub repositories, characterising the developers who introduce SATD and finding it is not uniformly concentrated in low-quality code. Maldonado and Shihab~\citep{maldonado2015satd} further classify SATD into five types (design, defect, code, test, and documentation debt), providing the conceptual vocabulary that underlies our keyword-based scan; our list of markers (\texttt{TODO}, \texttt{FIXME}, \texttt{HACK}, \texttt{XXX}, \texttt{BUG}) follows their operationalisation. Huang et al.~\citep{huang2018satd} subsequently show that text-mining classifiers (SVM, Na\"{i}ve Bayes, maximum entropy) can detect SATD in source comments with higher precision than simple keyword matching, and that the distribution of SATD types varies systematically by project; we use the simpler keyword approach because precision is less critical for our research question (is the \emph{prevalence} of any SATD marker different between academic and control repositories?) than for studies aimed at classifying SATD type. Alfayez et al.~\citep{alfayez2023tdtwitter} survey how practitioners discuss technical debt on social media, documenting that the perception of TD differs systematically between professional developers and learners, a distinction that frames our comparison between academic and non-academic repositories as a measurable rather than merely assumed difference in development culture.
 
 For the SonarQube corroboration subsection, Amanatidis et al.~\citep{amanatidis2020td} provide an independent empirical benchmark of agreement among commercial and open-source technical-debt measurement tools (including SonarQube and CAST), finding that while tools broadly agree on ordering projects by debt level, their absolute debt estimates differ substantially; this finding contextualises the discrepancy we observe between \texttt{jscpd} and SonarQube's duplication detectors as an instance of a documented pattern rather than an anomaly specific to our sample or setup. Lenarduzzi et al.~\citep{lenarduzzi2019surgical} propose a machine-learning approach to improve the precision of SonarQube's debt estimation by combining static analysis output with commit-history features; their work establishes both that automated TD estimation is an active research problem and that the tool's absolute figures are a starting point rather than a ground truth, two assumptions that underpin our decision to use SonarQube as a corroboration instrument rather than as the primary measurement.
 
@@ -52,36 +53,36 @@ For the SonarQube corroboration subsection, Amanatidis et al.~\citep{amanatidis2
 \section{Methodology}
 
 \subsection{Sample construction}
-Candidate academic repositories were identified via the GitHub search API using Spanish/Portuguese academic keywords (\emph{tesis}, \emph{trabajo de titulación}, \emph{proyecto integrador}, \emph{trabalho de conclusão}, \emph{tcc}, and related terms) combined with a language filter (Java, Python, JavaScript) and a minimum size threshold, then verified by checking whether at least one of the repository's top contributors declares a Latin American city or country in their public GitHub profile location field. This combined keyword-plus-location approach is a heuristic, not a ground-truth label, and is discussed as a limitation below. Repositories with fewer than 10 commits were excluded. The GitHub search API excludes forked repositories by default unless a \texttt{fork:} qualifier is explicitly added, and none of our queries added one; we verified this directly by re-issuing representative academic- and control-sample queries and confirming \texttt{fork=false} for every returned repository, so the sample does not require a separate fork-filtering step. From 5{,}418 unique keyword-matched candidates, 300 were accepted as academic (274 successfully cloned and analyzed; the remainder had since been deleted, renamed, or were otherwise unreachable). A control sample of 300 non-academic repositories was drawn by querying GitHub for repositories in the same three languages within a size band matched to the academic sample (275 successfully analyzed), explicitly \emph{not} sorted by popularity, since an earlier version of this pipeline that sorted by star count pulled in large, well-known projects that violate the intended size-matched pairing.
+Candidate academic repositories were identified via the GitHub search API using Spanish/Portuguese academic keywords (\emph{tesis}, \emph{trabajo de titulación}, \emph{proyecto integrador}, \emph{trabalho de conclusão}, \emph{tcc}, and related terms) combined with a language filter (Java, Python, JavaScript) and a minimum size threshold, then verified by checking whether at least one of the repository's top contributors declares a Latin American city or country in their public GitHub profile location field. This combined keyword-plus-location approach is a heuristic, not a ground-truth label, and is discussed as a limitation below. Repositories with fewer than 10 commits were excluded. The GitHub search API excludes forked repositories by default unless a \texttt{fork:} qualifier is explicitly added, and none of our queries added one; we verified this directly by re-issuing representative academic- and control-sample queries and confirming \texttt{fork=false} for every returned repository, so the sample does not require a separate fork-filtering step. From 5{,}418 unique keyword-matched candidates, 300 were accepted as academic (274 successfully cloned and analyzed; the remainder had since been deleted, renamed, or were otherwise unreachable). A control sample of 300 non-academic repositories was drawn by querying GitHub for repositories in the same three languages within a size band matched to the academic sample (275 successfully analyzed), explicitly \emph{not} sorted by popularity, since an earlier version of this pipeline that sorted by star count pulled in large, well-known projects that violate the intended size-matched pairing. We refer to this design as a matched-sample comparison because matching was performed at the group level (by language and size band) rather than pairing repositories one-to-one, and independent-samples statistical tests are used accordingly.
 
 Table~\ref{tab:country} reports the country and language composition of the 300 academic repositories, resolved from the GitHub profile location of each repository's top contributors (the same field used for the LatAm-verification heuristic above). Brazil accounts for nearly half the sample (47.7\%), consistent with Brazil's outsized share of Latin American GitHub activity; the remaining sample spans 12 further countries.
 
 \begin{table}[h]
 \centering
-\caption{Composition of the academic sample ($n=300$) by country and language.}
+\caption{Composition of the initially accepted academic sample ($n=300$) by country and language.}
 \label{tab:country}
-\begin{tabular}{lrrrrr}
+\begin{tabular}{lrrrrrr}
 \toprule
-Country & $n$ & \% & Java & JavaScript & Python \\
+Country & $n$ & \% & Java & JavaScript & Python & Analyzed* \\
 \midrule
-Brazil       & 143 & 47.7 & 57 & 42 & 44 \\
-Argentina    & 50  & 16.7 & 15 & 25 & 10 \\
-Colombia     & 33  & 11.0 & 14 & 9  & 10 \\
-Peru         & 17  & 5.7  & 7  & 8  & 2  \\
-Ecuador      & 13  & 4.3  & 8  & 2  & 3  \\
-Mexico       & 12  & 4.0  & 1  & 8  & 3  \\
-Chile        & 8   & 2.7  & 3  & 1  & 4  \\
-Venezuela    & 5   & 1.7  & 0  & 4  & 1  \\
-El Salvador  & 4   & 1.3  & 1  & 2  & 1  \\
-Uruguay      & 4   & 1.3  & 2  & 2  & 0  \\
-Costa Rica   & 3   & 1.0  & 1  & 1  & 1  \\
-Other        & 7   & 2.3  & 1  & 4  & 2  \\
-Unresolved   & 1   & 0.3  & 1  & 0  & 0  \\
+Brazil       & 143 & 47.7 & 57 & 42 & 44 & 130 \\
+Argentina    & 50  & 16.7 & 15 & 25 & 10 & 46 \\
+Colombia     & 33  & 11.0 & 14 & 9  & 10 & 30 \\
+Peru         & 17  & 5.7  & 7  & 8  & 2  & 15 \\
+Ecuador      & 13  & 4.3  & 8  & 2  & 3  & 12 \\
+Mexico       & 12  & 4.0  & 1  & 8  & 3  & 11 \\
+Chile        & 8   & 2.7  & 3  & 1  & 4  & 7 \\
+Venezuela    & 5   & 1.7  & 0  & 4  & 1  & 5 \\
+El Salvador  & 4   & 1.3  & 1  & 2  & 1  & 4 \\
+Uruguay      & 4   & 1.3  & 2  & 2  & 0  & 4 \\
+Costa Rica   & 3   & 1.0  & 1  & 1  & 1  & 3 \\
+Other        & 7   & 2.3  & 1  & 4  & 2  & 6 \\
+Unresolved   & 1   & 0.3  & 1  & 0  & 0  & 1 \\
 \bottomrule
 \end{tabular}
 
 \smallskip
-\footnotesize Other: Bolivia, Cuba, Guatemala, Honduras, Panama; each with fewer than 3 repositories.
+\footnotesize Other: Bolivia, Cuba, Guatemala, Honduras, Panama; each with fewer than 3 repositories. *26 repositories (8.7\%) were unavailable at clone time; the analyzed subset ($n=274$) retains approximately this proportional distribution.
 \end{table}
 
 \subsection{Metrics}
@@ -97,26 +98,46 @@ Because software metrics are typically strongly right-skewed, we compare groups 
 
 \section{Results}
 
-Table~\ref{tab:results} summarizes all nine metrics.
+To clarify the attrition across analysis stages, Table~\ref{tab:flow} summarizes the sample size available for each comparison. The primary analysis evaluates the 549 repositories that completed the initial clone and metric-extraction step.
+
+\begin{table}[h]
+\centering
+\caption{Sample flow and attrition.}
+\label{tab:flow}
+\begin{tabular}{ll}
+\toprule
+Stage & Repositories \\
+\midrule
+Candidates (by keyword) & 5{,}418 \\
+Accepted as academic & 300 \\
+Control sample & 300 \\
+\textbf{Successfully cloned and analyzed (Primary)} & \textbf{549} (274 academic + 275 control) \\
+Re-cloned for SonarQube & 546 (274 academic + 272 control) \\
+\textbf{Completed SonarQube analysis (Sub-sample)} & \textbf{415} (223 academic + 192 control) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:results} summarizes all nine metrics for the primary sample.
 
 \begin{table}[h]
 \centering
 \footnotesize
 \caption{Academic vs.\ control comparison, nine metrics (Holm-corrected). IQR = interquartile range (Q1--Q3).}
 \label{tab:results}
-\begin{tabular}{lcccccc}
+\begin{tabular}{lccccccc}
 \toprule
-Metric & Median (acad.) & IQR (acad.) & Median (ctrl.) & IQR (ctrl.) & Cliff's $\delta$ & $p_{\text{Holm}}$ \\
+Metric & Median (acad.) & IQR (acad.) & Median (ctrl.) & IQR (ctrl.) & Cliff's $\delta$ & Effect & $p_{\text{Holm}}$ \\
 \midrule
-Cyclomatic complexity (mean)     & 2.16   & 1.66--3.06   & 3.12   & 2.17--4.29   & $-0.37$ & $<0.001$ \\
-Cyclomatic complexity (max)      & 15.5   & 9.0--28.0    & 26.0   & 15.0--46.0   & $-0.31$ & $<0.001$ \\
-DIT (inheritance depth, Java)    & 1.21   & 1.06--1.41   & 1.07   & 1.00--1.28   & $+0.29$ & 0.003 \\
-Lines of code                    & 1{,}592 & 592--4{,}033 & 2{,}092 & 593--6{,}800 & $-0.10$ & 0.322 \\
-CBO (coupling, Java)             & 5.74   & 3.46--7.12   & 5.17   & 1.25--7.56   & $+0.15$ & 0.350 \\
-LCOM (cohesion, Java)            & 8.30   & 2.61--17.10  & 7.19   & 0.46--18.50  & $+0.12$ & 0.562 \\
-WMC (complexity/class, Java)     & 5.92   & 4.34--9.35   & 6.50   & 5.04--9.84   & $-0.08$ & 0.926 \\
-Duplication (\%)                 & 5.51   & 1.96--11.54  & 5.05   & 1.26--14.06  & $+0.03$ & 1.000 \\
-Test-file proportion             & 0.00   & 0.00--0.06   & 0.00   & 0.00--0.10   & $-0.01$ & 1.000 \\
+Cyclomatic complexity (mean)     & 2.16   & 1.66--3.06   & 3.12   & 2.17--4.29   & $-0.37$ & medium & $<0.001$ \\
+Cyclomatic complexity (max)      & 15.5   & 9.0--28.0    & 26.0   & 15.0--46.0   & $-0.31$ & small  & $<0.001$ \\
+DIT (inheritance depth, Java)    & 1.21   & 1.06--1.41   & 1.07   & 1.00--1.28   & $+0.29$ & small  & 0.003 \\
+Lines of code                    & 1{,}592 & 592--4{,}033 & 2{,}092 & 593--6{,}800 & $-0.10$ & negligible & 0.322 \\
+CBO (coupling, Java)             & 5.74   & 3.46--7.12   & 5.17   & 1.25--7.56   & $+0.15$ & small  & 0.350 \\
+LCOM (cohesion, Java)            & 8.30   & 2.61--17.10  & 7.19   & 0.46--18.50  & $+0.12$ & negligible & 0.562 \\
+WMC (complexity/class, Java)     & 5.92   & 4.34--9.35   & 6.50   & 5.04--9.84   & $-0.08$ & negligible & 0.926 \\
+Duplication (\%)                 & 5.51   & 1.96--11.54  & 5.05   & 1.26--14.06  & $+0.03$ & negligible & 1.000 \\
+Test-file proportion             & 0.00   & 0.00--0.06   & 0.00   & 0.00--0.10   & $-0.01$ & negligible & 1.000 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -184,7 +205,7 @@ Code smells / 1{,}000 lines        & 27.2 & 23.3 & $+0.035$ & negligible & 0.541
 
 SonarQube's own complexity metrics corroborate the \texttt{lizard}-based finding independently: academic repositories have significantly lower complexity per function, both cyclomatic (median 2.07 vs.\ 2.98, $\delta=-0.458$, medium effect, $p<10^{-14}$) and cognitive (median 1.31 vs.\ 3.00, $\delta=-0.426$, medium, $p<10^{-12}$), the same direction and a comparable effect size to the \texttt{lizard}-based result in Table~\ref{tab:results}, now confirmed with the specific tool our protocol originally named. \texttt{sqale\_debt\_ratio}, SonarQube's own technical-debt-ratio metric that our original substitution could not reproduce, is significantly \emph{lower} in academic code ($\delta=-0.142$, $p=0.025$), consistent with, not contradicting, the lower-complexity result. Duplication tells a more mixed story: SonarQube's duplicate-code detector finds significantly \emph{higher} duplication in academic code (median 2.10\% vs.\ 0.80\%, $\delta=+0.181$, small effect, $p=0.003$), the opposite direction from \texttt{jscpd}'s null result in Table~\ref{tab:results} ($\delta\approx0.03$); we treat this as a genuine tool-dependent discrepancy rather than resolve it in either direction (see Limitations). Code smells per 1,000 lines do not differ between groups ($p=0.541$).
 
-Figure~\ref{fig:efectos} shows the ten most frequent SonarQube code-smell types, split by group. The single most common smell in both groups is a JavaScript/React-specific rule (\emph{prop-types validation}), reflecting the language mix of the sample rather than an academic-specific pattern; academic code shows a markedly higher rate of two style-convention smells (\texttt{let}/\texttt{const} usage, package-naming convention), consistent with less mature project tooling and linting setup rather than with deeper structural problems. Not every smell in Figure~\ref{fig:efectos} follows this direction, though: the default-unnamed-package smell (Java), also among the ten most frequent, is far more common in the \emph{control} group (2{,}343 vs.\ 114 occurrences), the opposite of the general style-convention pattern, so we do not read the academic/control split as uniform across all ten smell types.
+Figure~\ref{fig:efectos} shows the ten most frequent SonarQube code-smell types, split by group. The single most common smell in both groups is a JavaScript/React-specific rule (\emph{prop-types validation}), reflecting the language mix of the sample rather than an academic-specific pattern; academic code shows a markedly higher rate of two style-convention smells (\texttt{let}/\texttt{const} usage, package-naming convention), consistent with less mature project tooling and linting setup rather than with deeper structural problems. Not every smell in Figure~\ref{fig:efectos} follows this direction, though: the default-unnamed-package smell (Java), also among the ten most frequent, is far more common in the \emph{control} group (2{,}343 vs.\ 114 occurrences). This massive concentration in the control group likely originates from a few specific repositories with heavy code generation rather than a widespread practice, so we do not read the academic/control split as uniform across all ten smell types. Finally, we note that the SonarQube sub-sample suffers from differential attrition; see Limitations (\S6) for a full accounting of its impact.
 
 \begin{figure}[h]
 \centering
@@ -219,7 +240,6 @@ In a matched-sample comparison of 274 Latin American academic repositories again
 \section*{Data Availability}
 The repository lists, extracted metrics, and analysis code will be published in a public repository with a Zenodo DOI upon submission (see \texttt{README.md} for the current repository location). Cloned source code itself is not redistributed; only derived metrics and repository identifiers are shared, consistent with each source repository's own license.
 
-\bibliographystyle{IEEEtran}
 \bibliography{refs}
 
 \end{document}

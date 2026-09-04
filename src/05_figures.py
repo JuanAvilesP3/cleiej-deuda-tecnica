@@ -56,6 +56,8 @@ def fig1_boxplots_clave(df):
         for patch, g in zip(bp["boxes"], ["academico", "control"]):
             patch.set_facecolor(GROUP_COLORS[g])
             patch.set_alpha(0.8)
+            if g == "control":
+                patch.set_hatch('//')
         for median in bp["medians"]:
             median.set_color("black")
         ax.set_xticks([1, 2])
@@ -81,9 +83,10 @@ def fig2_test_file_ratio(df):
 
 def fig3_nloc_vs_duplicacion(df):
     fig, ax = plt.subplots(figsize=(7.5, 5))
+    markers = {"academico": "o", "control": "^"}
     for g, color in GROUP_COLORS.items():
         sub = df[df.group == g].dropna(subset=["nloc_total", "duplication_pct"])
-        ax.scatter(sub["nloc_total"], sub["duplication_pct"], color=color, alpha=0.5, s=25, label=GROUP_LABELS[g])
+        ax.scatter(sub["nloc_total"], sub["duplication_pct"], color=color, alpha=0.5, s=25, marker=markers[g], label=GROUP_LABELS[g])
         if len(sub) > 2:
             x, y = sub["nloc_total"].values, sub["duplication_pct"].values
             order = np.argsort(x)
@@ -99,19 +102,27 @@ def fig3_nloc_vs_duplicacion(df):
     plt.close(fig)
 
 
-def fig4_resumen_efectos(mw):
-    mw = mw.copy()
-    mw["label_en"] = mw["label"].map(lambda x: ENGLISH_METRIC_LABELS.get(x, x))
-    mw = mw.sort_values("cliffs_delta")
-    fig, ax = plt.subplots(figsize=(8, 5))
-    colors = [COLORS["primary"] if sig else COLORS["accent"] for sig in mw["significativo_holm_0.05"]]
-    ax.barh(mw["label_en"], mw["cliffs_delta"], color=colors)
-    ax.axvline(0, color="grey", linewidth=0.8)
-    for thresh in (-0.474, -0.33, -0.147, 0.147, 0.33, 0.474):
-        ax.axvline(thresh, color="grey", linewidth=0.5, linestyle=":", alpha=0.5)
-    ax.set_xlabel("Cliff's delta (academic − control)")
-    save_figure(fig, FIG_DIR / "fig4_resumen_efectos")
-    plt.close(fig)
+def fig4_resumen_efectos(mw=None):
+    # Genera la Fig. 4 real de SonarQube (los 10 code smells mas frecuentes)
+    raw_smells = Path(__file__).resolve().parent.parent / "data" / "raw" / "sonarqube_smell_types_by_group.csv"
+    if raw_smells.exists():
+        df_smells = pd.read_csv(raw_smells)
+        top10 = df_smells.sort_values("count_total", ascending=False).head(10).iloc[::-1]
+
+        fig, ax = plt.subplots(figsize=(11, 6))
+        y = np.arange(len(top10))
+        h = 0.38
+        ax.barh(y + h / 2, top10["count_academico"], height=h, color=COLORS["primary"], label="Academic")
+        ax.barh(y - h / 2, top10["count_control"], height=h, color=COLORS["secondary"], label="Control")
+        ax.set_yticks(y)
+        ax.set_yticklabels(top10["rule_name"], fontsize=9)
+        ax.set_xlabel("Number of issues (SonarQube CODE_SMELL rule violations)", fontsize=10)
+        ax.legend(loc="lower right", fontsize=9.5)
+        fig.subplots_adjust(left=0.45)
+        save_figure(fig, FIG_DIR / "fig4_resumen_efectos")
+        plt.close(fig)
+    else:
+        print("Warning: sonarqube_smell_types_by_group.csv not found")
 
 
 def main():
@@ -128,7 +139,7 @@ def main():
     fig3_nloc_vs_duplicacion(df)
     print("Fig. 3 lista")
     fig4_resumen_efectos(mw)
-    print("Fig. 4 lista")
+    print("Fig. 4 lista (SonarQube Top-10 smells real)")
 
     print(f"\nCompletado: 4 figuras guardadas en {FIG_DIR}")
 
