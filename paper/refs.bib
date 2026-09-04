@@ -12,6 +12,7 @@
 
 % verificado 20/08/2026, c2.com/doc/oopsla92.html -- primera referencia conocida a la metafora de "deuda tecnica"
 @techreport{cunningham1992wycash,
+  doi = {10.1145/157709.157715},
   author      = {Cunningham, Ward},
   title       = {The {WyCash} Portfolio Management System},
   institution = {OOPSLA'92 Experience Report, Addendum to the Proceedings},
@@ -179,7 +180,7 @@
 }
 
 % verificado 01/09/2026, DOI 10.1016/j.jss.2012.12.052 ? Tom 2013 JSS ? TITULO CORRECTO
-% "An Exploration of Technical Debt" — primer estudio empirico sistematico de TD
+% "An Exploration of Technical Debt"  primer estudio empirico sistematico de TD
 @article{tom2013exploration,
   author  = {Tom, Edith and Aurum, Aybuke and Vidgen, Richard},
   title   = {An Exploration of Technical Debt},
@@ -208,10 +209,10 @@
 % verificado 01/09/2026, DOI 10.1145/3340482.3342747 ? Lenarduzzi; Martini 2019 ? TITULO CORRECTO
 % "Towards surgically-precise technical debt estimation: early results and research roadmap"
 % MaLTeSQuE 2019 (workshop ACM SIGSOFT).
-% Propone un enfoque de ML para estimar la deuda técnica con precisión quirúrgica,
+% Propone un enfoque de ML para estimar la deuda tcnica con precisin quirrgica,
 % combinando SonarQube con datos de historia de commits; es el antecedente directo
-% de la validación cruzada SonarQube/jscpd que reportamos en la subsección 3.5
-% y el origen de la discusión sobre la dependencia de herramienta en la medición de TD.
+% de la validacin cruzada SonarQube/jscpd que reportamos en la subseccin 3.5
+% y el origen de la discusin sobre la dependencia de herramienta en la medicin de TD.
 @inproceedings{lenarduzzi2019surgical,
   author    = {Lenarduzzi, Valentina and Martini, Antonio and Taibi, Davide and Tamburri, Damian Andrew},
   title     = {Towards Surgically-Precise Technical Debt Estimation: Early Results and Research Roadmap},
@@ -220,4 +221,40 @@
   pages     = {1--6},
   doi       = {10.1145/3340482.3342747},
   url       = {https://doi.org/10.1145/3340482.3342747}
+}
+
+% verificado 02/09/2026, DOI 10.1109/icsme.2014.31 resuelve en Crossref:
+% Potdar, A., Shihab, E. -- "An Exploratory Study on Self-Admitted Technical Debt"
+% 2014 IEEE ICSME, pp. 91-100, 2014.
+% Primer estudio empirico a gran escala de deuda tecnica auto-admitida (SATD)
+% en repositorios de software; establece que los marcadores TODO/FIXME/HACK
+% son prevalentes en codigo real y correlacionan con complejidad ciclomatica,
+% proporcionando el referente contra el cual se deben leer nuestras cifras
+% de prevalencia SATD (42.2% academico vs 23.0% control).
+@inproceedings{potdar2014satd,
+  author    = {Potdar, Aniket and Shihab, Emad},
+  title     = {An Exploratory Study on Self-Admitted Technical Debt},
+  booktitle = {2014 IEEE International Conference on Software Maintenance and Evolution (ICSME)},
+  year      = {2014},
+  pages     = {91--100},
+  doi       = {10.1109/icsme.2014.31},
+  note      = {[Online], Available: \url{https://doi.org/10.1109/icsme.2014.31}}
+}
+
+% verificado 02/09/2026, DOI 10.1002/smr.2547 resuelve en Crossref:
+% Alfayez, R., Winn, K., Ding, W., Alfayez, A. -- "Technical debt (TD) through the lens of Twitter: A survey"
+% Journal of Software: Evolution and Process, vol. 35, e2547, 2023.
+% Revisa como los practicantes discuten deuda tecnica en redes sociales,
+% documentando que la percepcion de TD es sistematicamente diferente entre
+% desarrolladores profesionales y estudiantes/aprendices -- contexto que
+% enmarca nuestra comparacion entre repositorios academicos y no academicos.
+@article{alfayez2023tdtwitter,
+  author  = {Alfayez, Reem and Winn, Kevin and Ding, Wei and Alfayez, Aseel},
+  title   = {Technical Debt ({TD}) Through the Lens of {Twitter}: A Survey},
+  journal = {Journal of Software: Evolution and Process},
+  year    = {2023},
+  volume  = {35},
+  pages   = {e2547},
+  doi     = {10.1002/smr.2547},
+  note    = {[Online], Available: \url{https://doi.org/10.1002/smr.2547}}
 }

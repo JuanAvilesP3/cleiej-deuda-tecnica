@@ -12,11 +12,11 @@ matplotlib.use("Agg")  # backend no interactivo: evita cuelgues/crashes de
 import matplotlib.pyplot as plt
 
 COLORS = {
-    "primary": "#1b4965",
-    "secondary": "#5fa8d3",
-    "accent": "#bee9e8",
-    "highlight": "#cae9ff",
-    "neutral": "#62929e",
+    "primary": "#E69F00",      # Orange (Okabe-Ito)
+    "secondary": "#56B4E9",    # Sky Blue (Okabe-Ito)
+    "accent": "#009E73",       # Bluish Green (Okabe-Ito)
+    "highlight": "#F0E442",    # Yellow (Okabe-Ito)
+    "neutral": "#0072B2",      # Blue (Okabe-Ito)
 }
 
 LINESTYLES = ["-", "--", "-.", ":"]

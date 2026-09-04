@@ -6,6 +6,8 @@ data/raw/*
 *.aux
 *.log
 *.out
+*.bbl
+*.blg
 *.synctex.gz
+~$*.docx
 data/processed/
-.env

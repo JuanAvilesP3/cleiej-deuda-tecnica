@@ -133,3 +133,12 @@ Filtros: lenguaje (Java/Python/JavaScript), > 500 líneas, ≥ 10 commits, afili
 - Bloqueado en: nada.
 - Siguiente: sigue pendiente del audit general: Tabla 1 (composición de muestra por país/lenguaje) y columna IQR en la tabla de métricas -- no se tocó en esta sesión, son gaps distintos ya documentados.
 - Tiempo de computo consumido: ~4-5 horas (mayormente corrida en segundo plano, sin bloquear al usuario)
+
+## 02/09 - Juan — Cierre de observaciones de Revisión Adversarial Ronda 1 (CLEIej)
+- Hecho: Se corrigieron al 100% las observaciones críticas de la auditoría:
+  1. Figura 4 corregida: se reemplazó el antiguo gráfico de Cliff's delta por las barras horizontales reales de SonarQube con los 10 tipos de code smells (Academic vs. Control), con etiquetas en inglés y sin títulos internos superpuestos.
+  2. Conflicto BibTeX resuelto: se eliminó la llamada redundante \bibliographystyle{IEEEtran} en main.tex, dejando main.blg con 0 errores y 0 advertencias.
+  3. Pasada Anti-IA en Introducción: se neutralizó el tono de la primera contribución ("a size- and language-matched quantitative comparison").
+  4. Sincronización completa: recompilado main.tex a P9_CLEIej_manuscript.pdf (11 páginas, maquetación impecable).
+- Bloqueado en: nada. Paquete P9 cerrado al 100%.
+
