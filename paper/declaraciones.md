@@ -7,13 +7,13 @@ Los autores declaran que durante la preparación de este manuscrito se utilizaro
 Los datos cuantitativos procesados, las listas de repositorios de GitHub analizados, las tablas de métricas estáticas consolidadas y el pipeline completo de scripts en Python (`01_download.py` a `05_figures.py` y `03b_sonarqube_validate.py`) están disponibles para su total reproducibilidad. El código fuente de los repositorios de terceros analizados no se redistribuye directamente, respetando las licencias originales de cada proyecto, pero todos los identificadores públicos y métricas extraídas se encuentran organizados y serán depositados en un repositorio público abierto con asignación de DOI en Zenodo tras la aceptación del manuscrito.
 
 ## 3. Contribuciones de Autoría (CRediT — Contributor Roles Taxonomy)
-- **Conceptualización:** Autor Principal.
-- **Metodología:** Autor Principal.
-- **Software y Pipeline de Minería:** Autor Principal.
-- **Validación y Análisis Formal:** Autor Principal.
-- **Investigación y Curación de Datos:** Autor Principal.
-- **Redacción — Borrador Original:** Autor Principal.
-- **Redacción — Revisión y Edición:** Autor Principal.
+- **Conceptualization:** Isaac David Torres-Paredes.
+- **Methodology & Experimental Design:** Isaac David Torres-Paredes, Juan Pablo Aviles-Esparza.
+- **Software & Mining Pipeline:** Juan Pablo Aviles-Esparza, Italo Tenempaguay-Granizo.
+- **Validation & Statistical Analysis:** Juan Pablo Aviles-Esparza, Italo Tenempaguay-Granizo.
+- **Investigation & Data Curation:** Italo Tenempaguay-Granizo, Juan Pablo Aviles-Esparza.
+- **Writing – Original Draft:** Isaac David Torres-Paredes, Juan Pablo Aviles-Esparza.
+- **Writing – Review & Editing:** Isaac David Torres-Paredes, Italo Tenempaguay-Granizo.
 
 ## 4. Conflicto de Intereses (Conflict of Interest)
 Los autores declaran que no existen conflictos de interés financieros, institucionales, profesionales o personales que hayan influido directa o indirectamente en el diseño, desarrollo, resultados o conclusiones del presente estudio.

@@ -35,9 +35,8 @@ We confirm that this manuscript represents original work, has not been published
 Thank you very much for your time and consideration of our work.
 
 Sincerely,
-
-**The Authors**  
-Faculty of Informatics and Electronics  
-Escuela Superior Politécnica de Chimborazo (ESPOCH)  
-Riobamba, Ecuador  
-*Corresponding e-mail:* `author@email.edu`
+ 
+**Dr. Isaac David Torres-Paredes** (on behalf of all coauthors)  
+Software Engineering, Faculty of Informatics and Electronics  
+Escuela Superior Politécnica de Chimborazo (ESPOCH), Riobamba 060155, Ecuador  
+*Corresponding e-mail:* `isaac.torres@espoch.edu.ec`

@@ -11,8 +11,10 @@
   2. `paper/declaraciones.md` (Declaraciones CRediT, COPE de IA, conflictos de interés y disponibilidad en Zenodo).
   3. Paquete ZIP con fuentes LaTeX (`main.tex`, `refs.bib`, `cleiej.cls` y carpeta `figures/`).
 - **Autores en orden:**
-  - Los campos de autoría, filiaciones institucionales, correos de contacto y ORCIDs se registran en el formulario OJS.
-- **Autor de correspondencia:** A definir en la cuenta de envío OJS.
+  1. **Isaac David Torres-Paredes** (`isaac.torres@espoch.edu.ec`, ESPOCH, ORCID: `0009-0001-7057-9316`).
+  2. **Juan Pablo Aviles-Esparza** (`juan.aviles@espoch.edu.ec`, ESPOCH, ORCID: `0009-0007-0058-8069`).
+  3. **Italo Javier Tenempaguay-Granizo** (`italo.tenempaguay@espoch.edu.ec`, ESPOCH, ORCID: `0009-0001-5753-4279`).
+- **Autor de correspondencia:** Isaac David Torres-Paredes (`isaac.torres@espoch.edu.ec`).
 - **Palabras clave para el formulario OJS:**
   `Technical debt`, `Code smells`, `Software quality`, `Academic repositories`, `GitHub mining`, `Empirical software engineering`, `SonarQube`.
 - **Revisores pares sugeridos (3 expertos latinoamericanos):**
