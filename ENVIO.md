@@ -8,7 +8,7 @@
 - **Archivo principal a subir:** [`paper/P9_CLEIej_manuscript.pdf`](file:///c:/Users/Juan/Desktop/PAPERS/09-cleiej-deuda-tecnica/paper/P9_CLEIej_manuscript.pdf) (11 páginas compiladas bajo la clase oficial `cleiej.cls`).
 - **Archivos complementarios / Código fuente:**
   1. `paper/cover_letter.md` (Carta formal al Editor en Jefe).
-  2. `paper/declaraciones.md` (Declaraciones CRediT, COPE de IA, conflictos de interés y disponibilidad en Zenodo).
+  2. `paper/declaraciones.md` (Declaraciones CRediT, COPE de IA, conflictos de interés y disponibilidad en Zenodo: DOI 10.5281/zenodo.22907774).
   3. Paquete ZIP con fuentes LaTeX (`main.tex`, `refs.bib`, `cleiej.cls` y carpeta `figures/`).
 - **Autores en orden:**
   1. **Isaac David Torres-Paredes** (`isaac.torres@espoch.edu.ec`, ESPOCH, ORCID: `0009-0001-7057-9316`).
