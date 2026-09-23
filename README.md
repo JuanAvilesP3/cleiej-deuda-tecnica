@@ -18,7 +18,7 @@
 - [x] Word/PDF sincronizados y verificados palabra por palabra contra main.tex
 - [ ] Revisión cruzada (2 sep, la hace el otro practicante)
 - [ ] Repositorio en GitHub (repo local únicamente por ahora)
-- [ ] Publicado en Zenodo (DOI)
+- [x] Publicado en Zenodo (DOI: [10.5281/zenodo.22907774](https://doi.org/10.5281/zenodo.22907774))
 - [x] Carta de presentación y declaraciones (borrador en `paper/cover_letter.md` y `paper/declaraciones.md`)
 - [ ] Entregado al responsable académico
 
