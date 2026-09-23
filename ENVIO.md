@@ -3,6 +3,7 @@
 - **Revista destino:** *CLEI Electronic Journal* (CLEIej), Centro Latinoamericano de Estudios en Informática (CLEI).
 - **Indexación:** Scopus, SciELO, DOAJ, Latindex Catálogo 2.0, DBLP.
 - **URL del portal de envío (OJS):** [https://cleiei.clei.org/index.php/cleiej/about/submissions](https://cleiei.clei.org/index.php/cleiej/about/submissions)
+- **Modalidad de revisión por pares:** **Simple Ciego (Single-Blind Peer Review)**. La política editorial oficial de CLEIej estipula que los manuscritos no deben anonimizarse; los datos de autores y filiaciones se incluyen en el manuscrito según la clase oficial `cleiej.cls`.
 - **Modalidad de procesamiento:** Regular Research Paper.
 - **Cobra APC?:** **NO ($0 USD)**. Publicación 100% gratuita y de acceso abierto diamante (Diamond Open Access verificado en JOURNAL.md).
 - **Archivo principal a subir:** [`paper/P9_CLEIej_manuscript.pdf`](file:///c:/Users/Juan/Desktop/PAPERS/09-cleiej-deuda-tecnica/paper/P9_CLEIej_manuscript.pdf) (11 páginas compiladas bajo la clase oficial `cleiej.cls`).
