@@ -14,14 +14,15 @@
 
 \title{Technical Debt in Latin American Academic Software: A Matched-Sample Comparison with Open-Source Controls}
 \author{
-Author Name \\
-Department / Faculty \\
-Institution Name, City, Country \\
-\it author@email.edu
+Isaac David Torres-Paredes\footnote{Corresponding author: isaac.torres@espoch.edu.ec. ORCID: 0009-0001-7057-9316}, Juan Pablo Aviles-Esparza\footnote{ORCID: 0009-0007-0058-8069}, and Italo Javier Tenempaguay-Granizo\footnote{ORCID: 0009-0001-5753-4279} \\
+Software Engineering, Faculty of Informatics and Electronics \\
+Escuela Superior Politécnica de Chimborazo (ESPOCH), Riobamba 060155, Ecuador \\
+\it \{isaac.torres, juan.aviles, italo.tenempaguay\}@espoch.edu.ec
 }
 
 \begin{document}
 \maketitle
+\sloppy
 
 \begin{abstract}
 \noindent Software produced in university courses and capstone projects is widely assumed to carry more technical debt than comparable open-source work, but this assumption has rarely been tested quantitatively for the Latin American context specifically. We identify 274 GitHub repositories authored by contributors affiliated with Latin American universities (via keyword search plus contributor-location verification) and pair them with 275 non-academic control repositories matched by language and size, then compare nine static metrics (cyclomatic complexity, lines of code, code duplication, a test-file-presence proxy for coverage, and, for the Java subset, coupling, cohesion, and inheritance depth) with Mann-Whitney U tests, Holm correction, and Cliff's delta. Contrary to our initial hypothesis, academic code shows \emph{significantly lower} cyclomatic complexity than the control group (median 2.16 vs.\ 3.12, Cliff's $\delta=-0.37$, medium effect, $p<10^{-11}$ after correction), not higher. Inheritance depth is significantly higher in academic Java code, as hypothesized ($\delta=+0.29$, $p=0.003$). Coupling, cohesion, duplication, and test-file presence show no significant difference after correction. We report this inverted finding directly rather than reframing the study around it, and discuss the most likely explanation: our size-matched control sample, drawn from small non-labeled repositories rather than mature open-source projects, is itself closer to informal or learning-stage code than to production software, which narrows, and in one dimension reverses, the gap the original hypothesis expected. A follow-up analysis with SonarQube Community itself (installed from its standalone ZIP distribution, without Docker or administrator privileges, on a 415-repository subset) corroborates the complexity finding independently (complexity per function: $\delta=-0.458$, medium effect, $p<10^{-14}$) and finds academic code has a \emph{lower} SonarQube-native technical debt ratio ($\delta=-0.142$, $p=0.025$), consistent with, not contradicting, the lower-complexity result. On the same sub-sample, a self-admitted technical debt (SATD) comment count (\texttt{TODO}/\texttt{FIXME}-style markers) runs in the direction the original hypothesis expected: academic repositories more often contain at least one such marker than control repositories do (42.2\% vs.\ 23.0\%, Cliff's $\delta=+0.190$, $p<0.001$), even though the underlying code is structurally simpler.
@@ -125,6 +126,7 @@ Table~\ref{tab:results} summarizes all nine metrics for the primary sample.
 \footnotesize
 \caption{Academic vs.\ control comparison, nine metrics (Holm-corrected). IQR = interquartile range (Q1--Q3).}
 \label{tab:results}
+\resizebox{\textwidth}{!}{
 \begin{tabular}{lccccccc}
 \toprule
 Metric & Median (acad.) & IQR (acad.) & Median (ctrl.) & IQR (ctrl.) & Cliff's $\delta$ & Effect & $p_{\text{Holm}}$ \\
@@ -140,6 +142,7 @@ Duplication (\%)                 & 5.51   & 1.96--11.54  & 5.05   & 1.26--14.06 
 Test-file proportion             & 0.00   & 0.00--0.06   & 0.00   & 0.00--0.10   & $-0.01$ & negligible & 1.000 \\
 \bottomrule
 \end{tabular}
+}
 \end{table}
 
 \begin{figure}[h]
@@ -226,7 +229,7 @@ The DIT result, that academic code has measurably deeper inheritance hierarchies
 
 We take the near-zero test-file proportion in both groups, rather than only the academic group, at face value: it suggests that the near-absence of testing culture in this size class of repository is a broader phenomenon than an academic-specific one, at least by this proxy metric, and that interventions aimed at improving testing practice in student software may be addressing a gap that is not actually specific to the classroom.
 
-That the SonarQube sub-sample reproduces the complexity result independently matters for how much weight the finding should carry: it is not an artifact of \texttt{lizard}'s particular parsing or counting conventions, since a structurally different tool, one that also computes a composite, remediation-cost-based debt ratio rather than a single structural proxy, converges on the same direction and a similar magnitude. The lower \texttt{sqale\_debt\_ratio} in academic code extends this rather than complicating it: SonarQube's debt ratio aggregates many rule violations, not only complexity, so a lower ratio despite a higher duplication rate suggests that whatever is driving academic code's higher SonarQube-detected duplication is not enough, on its own, to outweigh the complexity advantage in SonarQube's own composite accounting.
+That the SonarQube sub-sample reproduces the complexity result independently matters for how much weight the finding should carry: it is not an artifact of \texttt{lizard}'s particular parsing or counting conventions, since a structurally different tool, one that also computes a composite, remediation-cost-based debt ratio rather than a single structural proxy, converges on the same direction and a similar magnitude. The lower \texttt{sqale\_debt\_ratio} in academic code extends this rather than complicating it: SonarQube's debt ratio aggregates many rule violations, beyond just complexity, so a lower ratio despite a higher duplication rate suggests that whatever is driving academic code's higher SonarQube-detected duplication is not enough, on its own, to outweigh the complexity advantage in SonarQube's own composite accounting.
 
 The duplication discrepancy between \texttt{jscpd} (null, default settings) and SonarQube's detector (small, significant, and in the direction the original hypothesis expected) is at least partly explained by the two tools' different default block-matching thresholds. We isolated this factor directly: re-running \texttt{jscpd} with \texttt{--min-tokens 100} (approximating SonarQube's typical Java threshold of roughly 100 tokens or 10 lines) on the identical 415-repository sub-sample used for the SonarQube comparison, holding the sample fixed so only the threshold changes, reverses the null result. At the higher threshold, \texttt{jscpd} finds significantly \emph{higher} duplication in academic code (median 1.77\% vs.\ 1.10\%, Cliff's $\delta=+0.122$, small effect, $p=0.031$), the same direction SonarQube reports, rather than the null result \texttt{jscpd} gives at its own default (roughly 50 tokens) on the larger 549-repository sample. This does not fully resolve the discrepancy, since the effect size at the matched threshold ($\delta=0.122$) is still smaller than SonarQube's ($\delta=0.181$) and the sample-size factor remains conflated with the original default-threshold null result, but it shows the threshold is a real, non-trivial contributor: a more permissive duplicate-detection threshold on the same tool, same sample, changes both the significance and the direction of the finding.
 
@@ -239,6 +242,9 @@ In a matched-sample comparison of 274 Latin American academic repositories again
 
 \section*{Data Availability}
 The repository lists, extracted metrics, and analysis code will be published in a public repository with a Zenodo DOI upon submission (see \texttt{README.md} for the current repository location). Cloned source code itself is not redistributed; only derived metrics and repository identifiers are shared, consistent with each source repository's own license.
+
+\section*{Author Contributions}
+\textbf{Juan Pablo Aviles-Esparza:} Conceptualization, Methodology, Software, Writing - Original Draft. \textbf{Italo Javier Tenempaguay-Granizo:} Data Curation, Formal Analysis, Validation, Writing - Review \& Editing. \textbf{Isaac David Torres-Paredes:} Supervision, Project Administration, Funding Acquisition, Writing - Review \& Editing.
 
 \bibliography{refs}
 
