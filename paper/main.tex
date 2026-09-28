@@ -16,7 +16,7 @@
 \author{
 Isaac David Torres-Paredes\footnote{Corresponding author: isaac.torres@espoch.edu.ec. ORCID: 0009-0001-7057-9316}, Juan Pablo Aviles-Esparza\footnote{ORCID: 0009-0007-0058-8069}, and Italo Javier Tenempaguay-Granizo\footnote{ORCID: 0009-0001-5753-4279} \\
 Software Engineering, Faculty of Informatics and Electronics \\
-Escuela Superior Politécnica de Chimborazo (ESPOCH), Riobamba 060155, Ecuador \\
+Escuela Superior Polit\'ecnica de Chimborazo (ESPOCH), Riobamba 060155, Ecuador \\
 \it \{isaac.torres, juan.aviles, italo.tenempaguay\}@espoch.edu.ec
 }
 
@@ -40,7 +40,7 @@ The contributions of this work are: (1) a size- and language-matched quantitativ
 
 \section{Related Work}
 
-Technical debt as a concept was first empirically studied in depth by Tom, Aurum, and Vidgen~\citep{tom2013exploration}, who interviewed practitioners to catalogue the contexts in which debt arises, the types of debt most commonly acknowledged, and the consequences of letting it accumulate; their eight-category taxonomy (code, design, test, documentation, and architectural debt, among others) is the conceptual vocabulary that underpins our operationalisation of SATD markers. Li, Avgeriou, and Liang~\citep{li2015mapping} subsequently conducted a systematic mapping study of 94 empirical TD papers, confirming that design and code debt are the most studied forms and that the field lacks longitudinal comparisons of TD across project types — the comparison axis that this paper introduces (academic vs. non-academic). Together these two works establish that (a) TD is a well-defined and measurable construct and (b) the specific comparison we run, controlled by language and size, has not previously been reported in the literature at the scale we achieve.
+Technical debt as a concept was first empirically studied in depth by Tom, Aurum, and Vidgen~\citep{tom2013exploration}, who interviewed practitioners to catalogue the contexts in which debt arises, the types of debt most commonly acknowledged, and the consequences of letting it accumulate; their eight-category taxonomy (code, design, test, documentation, and architectural debt, among others) is the conceptual vocabulary that underpins our operationalisation of SATD markers. Li, Avgeriou, and Liang~\citep{li2015mapping} subsequently conducted a systematic mapping study of 94 empirical TD papers, confirming that design and code debt are the most studied forms and that the field lacks longitudinal comparisons of TD across project types --- the comparison axis that this paper introduces (academic vs. non-academic). Together these two works establish that (a) TD is a well-defined and measurable construct and (b) the specific comparison we run, controlled by language and size, has not previously been reported in the literature at the scale we achieve.
 
 Santos et al.~\citep{santos2017external} conduct a systematic literature review of external object-oriented quality metrics, cataloguing coupling, cohesion, and complexity as the dominant attributes used to characterize code quality empirically, the same three families of metric this paper applies directly to a labeled academic/non-academic comparison, rather than reviewing how others have used them. More directly relevant, Hamer et al.~\citep{hamer2021using} use Git-derived metrics to measure students' and teams' code-contribution patterns within university software-development courses, demonstrating that repository-level metrics can meaningfully characterize academic software engineering practice at scale; our study extends this direction from process metrics (who contributed what) to product metrics (what the resulting code looks like structurally), and from within-course comparisons to a labeled comparison against non-academic repositories. Mateos et al.~\citep{mateos2017managing} apply the same Chidamber and Kemerer~\citep{chidamber1994metrics} object-oriented metric suite this paper uses, in their case to relate service-interface complexity to the underlying object-oriented implementation; their use of CK metrics as an early, development-time complexity signal is consistent with how this paper treats complexity metrics generally, as a proxy available before a system reaches production rather than as an after-the-fact quality judgment. The repository-mining methodology follows the practices established by Kalliamvakou et al.~\citep{kalliamvakou2014promises} and refined by Munaiah et al.~\citep{munaiah2017curating}, both of which document that GitHub repositories must be filtered to exclude personal, trivial, and forked projects before any structural metric can be interpreted as representative of software engineering practice; our fork-exclusion policy and the 10-commit minimum threshold directly implement their recommendations.
 
@@ -147,7 +147,7 @@ Test-file proportion             & 0.00   & 0.00--0.06   & 0.00   & 0.00--0.10  
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.85\textwidth]{../results/figures/fig1_boxplots_clave.pdf}
+\includegraphics[width=0.85\textwidth]{figures/fig1_boxplots_clave.pdf}
 \caption{Distribution of key metrics, academic vs.\ control repositories.}
 \label{fig:boxplots}
 \end{figure}
@@ -175,14 +175,14 @@ We also tested a second alternative explanation directly: that shorter-lived, le
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.7\textwidth]{../results/figures/fig2_distribucion_tests.pdf}
+\includegraphics[width=0.7\textwidth]{figures/fig2_distribucion_tests.pdf}
 \caption{Distribution of the test-file-proportion proxy, academic vs.\ control.}
 \label{fig:testfile}
 \end{figure}
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.75\textwidth]{../results/figures/fig3_nloc_vs_duplicacion.pdf}
+\includegraphics[width=0.75\textwidth]{figures/fig3_nloc_vs_duplicacion.pdf}
 \caption{Repository size (lines of code) vs.\ code duplication, academic vs.\ control.}
 \label{fig:nloc-dup}
 \end{figure}
@@ -212,7 +212,7 @@ Figure~\ref{fig:efectos} shows the ten most frequent SonarQube code-smell types,
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.9\textwidth]{../results/figures/fig4_resumen_efectos.pdf}
+\includegraphics[width=0.9\textwidth]{figures/fig4_resumen_efectos.pdf}
 \caption{The ten most frequent SonarQube code-smell types, academic vs.\ control (415 repositories analyzed).}
 \label{fig:efectos}
 \end{figure}

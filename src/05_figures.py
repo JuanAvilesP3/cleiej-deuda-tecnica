@@ -28,6 +28,8 @@ from figures_style import COLORS, apply_style, save_figure
 
 RESULTS_DIR = Path(__file__).resolve().parent.parent / "results" / "tables"
 FIG_DIR = Path(__file__).resolve().parent.parent / "results" / "figures"
+PAPER_FIG_DIR = Path(__file__).resolve().parent.parent / "paper" / "figures"
+PAPER_FIG_DIR.mkdir(parents=True, exist_ok=True)
 
 GROUP_COLORS = {"academico": COLORS["primary"], "control": COLORS["secondary"]}
 GROUP_LABELS = {"academico": "Academic", "control": "Control"}
@@ -65,6 +67,7 @@ def fig1_boxplots_clave(df):
         ax.set_title(label, fontsize=9.5)
 
     save_figure(fig, FIG_DIR / "fig1_boxplots_clave")
+    save_figure(fig, PAPER_FIG_DIR / "fig1_boxplots_clave")
     plt.close(fig)
 
 
@@ -78,6 +81,7 @@ def fig2_test_file_ratio(df):
     ax.set_ylabel("Density")
     ax.legend(fontsize=9)
     save_figure(fig, FIG_DIR / "fig2_distribucion_tests")
+    save_figure(fig, PAPER_FIG_DIR / "fig2_distribucion_tests")
     plt.close(fig)
 
 
@@ -99,6 +103,7 @@ def fig3_nloc_vs_duplicacion(df):
     ax.set_ylabel("Duplication (%)")
     ax.legend(fontsize=9)
     save_figure(fig, FIG_DIR / "fig3_nloc_vs_duplicacion")
+    save_figure(fig, PAPER_FIG_DIR / "fig3_nloc_vs_duplicacion")
     plt.close(fig)
 
 
@@ -120,6 +125,7 @@ def fig4_resumen_efectos(mw=None):
         ax.legend(loc="lower right", fontsize=9.5)
         fig.subplots_adjust(left=0.45)
         save_figure(fig, FIG_DIR / "fig4_resumen_efectos")
+    save_figure(fig, PAPER_FIG_DIR / "fig4_resumen_efectos")
         plt.close(fig)
     else:
         print("Warning: sonarqube_smell_types_by_group.csv not found")
