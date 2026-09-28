@@ -88,7 +88,7 @@ Technical debt, Software engineering education, Empirical software engineering, 
 
 ## 6. Enlaces de Reproducibilidad y Datos Abiertos
 - **Repositorio público en GitHub:** [https://github.com/JuanAvilesP3/cleiej-deuda-tecnica.git](https://github.com/JuanAvilesP3/cleiej-deuda-tecnica.git)
-- **Depósito permanente en Zenodo:** [https://doi.org/10.5281/zenodo.22907774](https://doi.org/10.5281/zenodo.22907774) (DOI: `10.5281/zenodo.22907774`).
+- **Depósito permanente en Zenodo:** [https://doi.org/10.5281/zenodo.23005764](https://doi.org/10.5281/zenodo.23005764) (DOI: `10.5281/zenodo.23005764`).
 
 ---
 
