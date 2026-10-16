@@ -109,7 +109,7 @@ def fig3_nloc_vs_duplicacion(df):
 
 def fig4_resumen_efectos(mw=None):
     # Genera la Fig. 4 real de SonarQube (los 10 code smells mas frecuentes)
-    raw_smells = Path(__file__).resolve().parent.parent / "data" / "raw" / "sonarqube_smell_types_by_group.csv"
+    raw_smells = RESULTS_DIR / "sonarqube_smell_types_by_group.csv"
     if raw_smells.exists():
         df_smells = pd.read_csv(raw_smells)
         top10 = df_smells.sort_values("count_total", ascending=False).head(10).iloc[::-1]
@@ -125,7 +125,7 @@ def fig4_resumen_efectos(mw=None):
         ax.legend(loc="lower right", fontsize=9.5)
         fig.subplots_adjust(left=0.45)
         save_figure(fig, FIG_DIR / "fig4_resumen_efectos")
-    save_figure(fig, PAPER_FIG_DIR / "fig4_resumen_efectos")
+        save_figure(fig, PAPER_FIG_DIR / "fig4_resumen_efectos")
         plt.close(fig)
     else:
         print("Warning: sonarqube_smell_types_by_group.csv not found")
