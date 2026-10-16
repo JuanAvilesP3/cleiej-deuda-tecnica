@@ -1,0 +1,101 @@
+rule_key,rule_name,count
+javascript:S6774,React components should validate prop types,7823
+javascript:S7748,Number literals should not have unnecessary decimal points or trailing zeros,5873
+java:S106,Standard outputs should not be used directly to log anything,4891
+javascript:S3504,"Variables should be declared with ""let"" or ""const""",4075
+javascript:S7764,"Use ""globalThis"" instead of ""window"", ""self"", or ""global""",3663
+java:S1220,The default unnamed package should not be used,2812
+java:S1192,String literals should not be duplicated,2602
+java:S1450,Private fields only used as local variables in methods should become local variables,1926
+javascript:S6582,Optional chaining should be preferred,1636
+java:S120,Package names should comply with a naming convention,1600
+python:S3776,Cognitive Complexity of functions should not be too high,1567
+javascript:S3358,Ternary operators should not be nested,1516
+javascript:S7773,Number static methods and properties should be preferred over global equivalents,1344
+css:S7924,Text and background colors should have sufficient contrast,1312
+javascript:S7781,"Strings should use ""replaceAll()"" instead of ""replace()"" with global regex",1272
+java:S100,Method names should comply with a naming convention,1226
+css:S4666,Selectors should not be duplicated,1187
+java:S117,Local variable and method parameter names should comply with a naming convention,1152
+python:S117,Local variable and function parameter names should comply with a naming convention,1112
+java:S125,Sections of code should not be commented out,1004
+python:S1192,String literals should not be duplicated,1000
+javascript:S2486,Exceptions should not be ignored,976
+java:S1172,Unused method parameters should be removed,970
+javascript:S7735,Negated conditions should be avoided when an else clause is present,945
+javascript:S3776,Cognitive Complexity of functions should not be too high,899
+javascript:S1128,Unnecessary imports should be removed,816
+Web:S6853,Label elements should have a text label and an associated control,807
+java:S116,Field names should comply with a naming convention,800
+javascript:S1854,Unused assignments should be removed,779
+javascript:S1481,Unused local variables and functions should be removed,757
+java:S1604,Anonymous inner classes containing only one method should become lambdas,633
+javascript:S6853,Label elements should have a text label and an associated control,626
+java:S1659,Multiple variables should not be declared on the same line,625
+java:S3776,Cognitive Complexity of methods should not be too high,600
+java:S112,Generic exceptions should never be thrown,522
+java:S1161,"""@Override"" should be used on overriding and implementing methods",511
+java:S1104,Class variable fields should not have public accessibility,508
+Web:S1827,Attributes deprecated in HTML5 should not be used,499
+java:S1186,Methods should not be empty,473
+javascript:S6479,JSX list components should not use array indexes as key,452
+python:S1481,Unused local variables should be removed,449
+javascript:S2004,Functions should not be nested too deeply,439
+java:S1135,"Track uses of ""TODO"" tags",437
+python:S8410,"FastAPI dependencies should use ""Annotated"" type hints",419
+javascript:S7721,Functions should be moved to the highest possible scope,417
+java:S1118,Utility classes should not have public constructors,398
+javascript:S7772,"Node.js built-in modules should be imported using the ""node:"" protocol",389
+javascript:S125,Sections of code should not be commented out,388
+java:S1948,"Fields in a ""Serializable"" class should either be transient or serializable",375
+java:S1197,"Array designators ""[]"" should be on the type, not the variable",359
+python:S100,Method names should comply with a naming convention,341
+java:S3740,Raw types should not be used,337
+javascript:S6848,Non-interactive DOM elements should not have an interactive handler,332
+java:S108,Nested blocks of code should not be left empty,315
+javascript:S3863,Imports from the same module should be merged,301
+python:S3457,String formatting should be used correctly,288
+javascript:S7778,Multiple consecutive calls to methods that accept multiple arguments should be combined,282
+java:S2293,"The diamond operator (""<>"") should be used",272
+php:S1131,Lines should not end with trailing whitespaces,266
+javascript:S4624,Template literals should not be nested,256
+java:S1854,Unused assignments should be removed,254
+css:S125,Sections of code should not be commented out,248
+python:S125,Sections of code should not be commented out,248
+Web:ImgWithoutAltCheck,"Image, area and button with image elements should have an ""alt"" attribute",238
+java:S101,Class names should comply with a naming convention,230
+java:S1481,Unused local variables should be removed,229
+java:S1488,Local variables should not be declared and then immediately returned or thrown,222
+javascript:S7780,String literals with escaped backslashes should use `String.raw` template literals,221
+javascript:S7718,Error parameters in catch clauses should follow a consistent naming convention,219
+java:S115,Constant names should comply with a naming convention,217
+java:S1068,"Unused ""private"" fields should be removed",209
+python:S7498,Literal syntax should be preferred when creating empty collections or dictionaries with keyword arguments,200
+java:S1125,Boolean literals should not be redundant,196
+javascript:S7761,"Data attributes should be accessed using "".dataset""",190
+python:S1172,Unused function parameters should be removed,190
+python:S5754,"""SystemExit"" should be re-raised",188
+javascript:S1121,Assignments should not be made from within sub-expressions,182
+typescript:S2933,"Fields that are only assigned in the constructor should be ""readonly""",177
+javascript:S6859,Imports should not use absolute paths,168
+javascript:S7723,"Built-in constructors should be called consistently with or without ""new""",167
+javascript:S6772,Spacing between inline elements should be explicit,164
+javascript:S6353,Regular expression quantifiers and character classes should be used concisely,163
+javascript:S6535,Unnecessary character escapes should be removed,161
+java:S1602,Lambdas containing only one statement should not nest this statement in a block,153
+javascript:S7740,"Variables should not be assigned the value of ""this""",152
+javascript:S7765,"Existence checks should use "".includes()"" instead of "".indexOf()"" or "".lastIndexOf()""",151
+python:S6711,numpy.random.Generator should be preferred to numpy.random.RandomState,144
+Web:S6844,Anchor tags should not be used as buttons,144
+java:S1128,Unnecessary imports should be removed,141
+python:S8415,HTTPException responses should be documented in endpoint metadata,140
+Web:S6819,Prefer tag over ARIA role,140
+java:S107,Methods should not have too many parameters,139
+javascript:S7785,Top-level await should be preferred over wrapped async operations,138
+java:S1066,"Mergeable ""if"" statements should be combined",134
+javascript:S1135,"Track uses of ""TODO"" tags",130
+java:S3457,Format strings should be used correctly,127
+javascript:S4138,"""for of"" should be used with Iterables",125
+java:S5361,"""String#replace"" should be preferred to ""String#replaceAll""",124
+java:S135,"Loops should not contain more than a single ""break"" or ""continue"" statement",123
+java:S3252,"""static"" base class members should not be accessed via derived types",123

@@ -25,9 +25,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 RAW_DIR = ROOT / "data" / "raw"
+TABLES_DIR = ROOT / "results" / "tables"
 
-SONAR_URL = "http://localhost:9000"
-TOKEN = "squ_018b965ee589002faa53977f1cd11fee2b3a8fac"
+from sonar_config import SONAR_URL, load_sonar_token
+
+TOKEN = load_sonar_token()
 
 METRIC_KEYS = ("complexity,cognitive_complexity,duplicated_lines_density,ncloc,"
                "sqale_index,sqale_debt_ratio,code_smells,classes,functions,bugs,vulnerabilities")
@@ -88,7 +90,7 @@ def main():
     fieldnames = ["full_name", "group", "project_key", "complexity", "cognitive_complexity",
                   "duplicated_lines_density", "ncloc", "sqale_index", "sqale_debt_ratio",
                   "code_smells", "classes", "functions", "bugs", "vulnerabilities"]
-    out_path = RAW_DIR / "metrics_sonarqube.csv"
+    out_path = TABLES_DIR / "metrics_sonarqube.csv"
     with open(out_path, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
@@ -113,7 +115,7 @@ def main():
             smell_rows.append({"rule_key": rule_key, "rule_name": rule_name, "count": count})
     smell_rows.sort(key=lambda r: -r["count"])
 
-    smell_out = RAW_DIR / "sonarqube_smell_types.csv"
+    smell_out = TABLES_DIR / "sonarqube_smell_types.csv"
     with open(smell_out, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=["rule_key", "rule_name", "count"])
         writer.writeheader()

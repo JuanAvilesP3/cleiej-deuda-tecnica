@@ -13,7 +13,9 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 
-ROOT_RAW = r"C:\Users\Juan\Desktop\PAPERS\09-cleiej-deuda-tecnica\data\raw"
+from pathlib import Path
+
+TABLES_DIR = Path(__file__).resolve().parent.parent / "results" / "tables"
 
 
 def cliffs_delta(a, b):
@@ -35,7 +37,7 @@ def effect_label(d):
     return "large"
 
 
-df = pd.read_csv(f"{ROOT_RAW}/metrics_sonarqube.csv")
+df = pd.read_csv(TABLES_DIR / "metrics_sonarqube.csv")
 df["complexity_per_function"] = df["complexity"] / df["functions"].replace(0, np.nan)
 df["cognitive_per_function"] = df["cognitive_complexity"] / df["functions"].replace(0, np.nan)
 df["smells_per_kloc"] = df["code_smells"] / (df["ncloc"].replace(0, np.nan) / 1000)
@@ -83,5 +85,6 @@ for r in results:
     print(f"{r['metric']:<55} {r['n_acad']:>5} {r['n_ctrl']:>5} {r['median_acad']:>10.3f} "
           f"{r['median_ctrl']:>10.3f} {r['cliffs_delta']:>8.3f} {r['effect']:>12} {r['p_holm']:>10.4g}")
 
-pd.DataFrame(results).to_csv(f"{ROOT_RAW}/sonarqube_comparacion_academico_control.csv", index=False)
-print(f"\nGuardado: {ROOT_RAW}\\sonarqube_comparacion_academico_control.csv")
+out_path = TABLES_DIR / "sonarqube_comparacion_academico_control.csv"
+pd.DataFrame(results).to_csv(out_path, index=False)
+print(f"\nGuardado: {out_path}")

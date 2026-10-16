@@ -43,8 +43,9 @@ JAVA21 = TOOLS_DIR / "jdk-21.0.12.1+1" / "bin" / "java.exe"
 EMPTY_BINARIES = TOOLS_DIR / "empty_binaries"
 EMPTY_BINARIES.mkdir(parents=True, exist_ok=True)
 
-SONAR_URL = "http://localhost:9000"
-TOKEN = "squ_018b965ee589002faa53977f1cd11fee2b3a8fac"
+from sonar_config import SONAR_URL, load_sonar_token
+
+TOKEN = load_sonar_token()
 
 SCAN_TIMEOUT = 150
 N_WORKERS = 2

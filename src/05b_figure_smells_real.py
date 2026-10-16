@@ -16,7 +16,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from figures_style import COLORS, apply_style, save_figure
 
-RAW_DIR = Path(__file__).resolve().parent.parent / "data" / "raw"
+TABLES_DIR = Path(__file__).resolve().parent.parent / "results" / "tables"
 FIG_DIR = Path(__file__).resolve().parent.parent / "results" / "figures"
 
 
@@ -26,7 +26,7 @@ def shorten(name, n=46):
 
 def main():
     apply_style()
-    df = pd.read_csv(RAW_DIR / "sonarqube_smell_types_by_group.csv")
+    df = pd.read_csv(TABLES_DIR / "sonarqube_smell_types_by_group.csv")
     top10 = df.sort_values("count_total", ascending=False).head(10).iloc[::-1]
 
     fig, ax = plt.subplots(figsize=(9.5, 5.8))
@@ -40,7 +40,8 @@ def main():
     # Sin ax.set_title interno para cumplir con las directrices de CLEIej
     ax.legend(loc="lower right", fontsize=9.5)
     
-    save_figure(fig, FIG_DIR / "fig4_resumen_efectos")
+    # Figura suplementaria: no debe pisar fig4_resumen_efectos (Fig. 4 del manuscrito, 05_figures.py).
+    save_figure(fig, FIG_DIR / "figS_smells_por_grupo")
     plt.close(fig)
     print("Fig. 4 (real, SonarQube en ingles) generada con exito")
 

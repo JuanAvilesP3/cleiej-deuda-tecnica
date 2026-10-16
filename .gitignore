@@ -11,3 +11,5 @@ data/raw/*
 *.synctex.gz
 ~$*.docx
 data/processed/
+# Registros de ejecucion del pipeline (run_all.py), si se publican
+!results/logs/*.log

@@ -20,8 +20,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 RAW_DIR = ROOT / "data" / "raw"
-SONAR_URL = "http://localhost:9000"
-TOKEN = "squ_018b965ee589002faa53977f1cd11fee2b3a8fac"
+from sonar_config import SONAR_URL, load_sonar_token
+
+TOKEN = load_sonar_token()
 CHUNK = 40
 
 
@@ -98,7 +99,7 @@ def main():
         })
     rows.sort(key=lambda r: -r["count_total"])
 
-    out_path = RAW_DIR / "sonarqube_smell_types_by_group.csv"
+    out_path = ROOT / "results" / "tables" / "sonarqube_smell_types_by_group.csv"
     with open(out_path, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=["rule_key", "rule_name", "count_academico", "count_control", "count_total"])
         writer.writeheader()
