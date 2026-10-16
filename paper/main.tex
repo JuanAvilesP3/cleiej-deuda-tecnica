@@ -7,7 +7,6 @@
 \usepackage{hyperref}
 \usepackage[labelfont=bf,labelsep=colon,justification=centering]{caption}
 
-\fancyhead[CO]{CLEI ELECTRONIC JOURNAL}
 
 \providecommand{\citep}[1]{\cite{#1}}
 \providecommand{\citet}[1]{\cite{#1}}
@@ -25,10 +24,16 @@ Escuela Superior Polit\'ecnica de Chimborazo (ESPOCH), Riobamba 060155, Ecuador 
 \sloppy
 
 \begin{abstract}
-\noindent Software produced in university courses and capstone projects is widely assumed to carry more technical debt than comparable open-source work, but this assumption has rarely been tested quantitatively for Latin America. We identify 274 GitHub repositories authored by contributors affiliated with Latin American universities and pair them with 275 non-academic control repositories matched by language and size. Nine static metrics (cyclomatic complexity, lines of code, duplication, a test-file-presence proxy for coverage, and, for the Java subset, coupling, cohesion, and inheritance depth) are compared with Mann-Whitney U tests, Holm correction, and Cliff's delta. Contrary to our hypothesis, academic code shows \emph{significantly lower} cyclomatic complexity than the controls (median 2.16 vs.\ 3.12, $\delta=-0.37$, medium effect, $p<10^{-11}$ after correction). Inheritance depth is higher in academic Java code, as hypothesized ($\delta=+0.29$, $p=0.003$); coupling, cohesion, duplication, and test-file presence show no significant difference. The most likely explanation lies in the control sample: small, non-labeled repositories are closer to learning-stage code than to mature open-source projects. A SonarQube Community analysis of a 415-repository subset corroborates the complexity result (complexity per function: $\delta=-0.458$, $p<10^{-14}$) and finds a slightly lower SonarQube technical debt ratio in academic code ($\delta=-0.142$, negligible, $p=0.025$). Self-admitted technical debt markers (\texttt{TODO}/\texttt{FIXME}-style comments) do run in the hypothesized direction: 42.2\% of academic repositories contain at least one, against 23.0\% of controls ($\delta=+0.190$, $p<0.001$), even though the underlying code is structurally simpler.
+\noindent Software produced in university courses and capstone projects is widely assumed to carry more technical debt than comparable open-source work, but this has rarely been tested for Latin America. We compare 274 GitHub repositories from contributors affiliated with Latin American universities against 275 non-academic repositories matched by language and size on nine static metrics, using Mann-Whitney U tests with Holm correction and Cliff's delta. Contrary to our hypothesis, academic code shows \emph{significantly lower} cyclomatic complexity (median 2.16 vs.\ 3.12, $\delta=-0.37$, $p<10^{-11}$). Inheritance depth is higher in academic Java code ($\delta=+0.29$, $p=0.003$); coupling, cohesion, duplication, and test-file presence do not differ significantly. The most likely explanation is the control sample, whose small, non-labeled repositories resemble learning-stage code more than mature open-source projects. SonarQube on a 415-repository subset corroborates the complexity result ($\delta=-0.458$, $p<10^{-14}$) and finds a slightly lower technical debt ratio in academic code ($\delta=-0.142$, $p=0.025$). Self-admitted technical debt markers run in the hypothesized direction: 42.2\% of academic repositories contain at least one, against 23.0\% of controls ($\delta=+0.190$, $p<0.001$).
 \end{abstract}
 
 \keywords{Technical debt, software engineering education, empirical software engineering, Latin American software, code complexity, GitHub mining.}
+
+\vspace{1em}
+\noindent\textbf{Resumen.} Se suele suponer que el software producido en cursos universitarios y trabajos de titulación acumula más deuda técnica que proyectos de código abierto comparables, pero esta suposición casi no se ha contrastado para América Latina. Comparamos 274 repositorios de GitHub de contribuyentes afiliados a universidades latinoamericanas con 275 repositorios no académicos emparejados por lenguaje y tamaño, en nueve métricas estáticas, mediante pruebas U de Mann-Whitney con corrección de Holm y delta de Cliff. Contra nuestra hipótesis, el código académico presenta una complejidad ciclomática significativamente \emph{menor} (mediana 2,16 frente a 3,12; $\delta=-0{,}37$; $p<10^{-11}$). La profundidad de herencia es mayor en el código académico en Java ($\delta=+0{,}29$; $p=0{,}003$); acoplamiento, cohesión, duplicación y presencia de archivos de prueba no difieren significativamente. La explicación más probable está en la muestra de control, cuyos repositorios pequeños y sin etiquetar se parecen más a código de aprendizaje que a proyectos maduros. SonarQube, aplicado a 415 repositorios, corrobora el resultado de complejidad ($\delta=-0{,}458$; $p<10^{-14}$) y encuentra un ratio de deuda técnica ligeramente menor en el código académico ($\delta=-0{,}142$; $p=0{,}025$). Los marcadores de deuda técnica autoadmitida siguen la dirección de la hipótesis: el 42,2\,\% de los repositorios académicos contiene al menos uno, frente al 23,0\,\% del grupo de control ($\delta=+0{,}190$; $p<0{,}001$).
+
+\vspace{0.5em}
+\noindent\textbf{Palabras clave:} Deuda técnica, educación en ingeniería de software, ingeniería de software empírica, software latinoamericano, complejidad de código, minería de GitHub.
 
 \section{Introduction}
 
@@ -60,7 +65,7 @@ Table~\ref{tab:country} reports the country and language composition of the 300 
 
 \begin{table}[h]
 \centering
-\caption{Composition of the initially accepted academic sample ($n=300$) by country and language.}
+\caption{Composition of the initially accepted academic sample ($n=300$) by country and language}
 \label{tab:country}
 \begin{tabular}{lrrrrrr}
 \toprule
@@ -103,7 +108,7 @@ To clarify the attrition across analysis stages, Table~\ref{tab:flow} summarizes
 
 \begin{table}[h]
 \centering
-\caption{Sample flow and attrition.}
+\caption{Sample flow and attrition}
 \label{tab:flow}
 \begin{tabular}{ll}
 \toprule
@@ -124,7 +129,7 @@ Table~\ref{tab:results} summarizes all nine metrics for the primary sample.
 \begin{table}[h]
 \centering
 \footnotesize
-\caption{Academic vs.\ control comparison, nine metrics (Holm-corrected). IQR = interquartile range (Q1--Q3).}
+\caption{Academic vs.\ control comparison, nine metrics (Holm-corrected). IQR = interquartile range (Q1--Q3)}
 \label{tab:results}
 \resizebox{\textwidth}{!}{
 \begin{tabular}{lccccccc}
@@ -148,7 +153,7 @@ Test-file proportion             & 0.00   & 0.00--0.06   & 0.00   & 0.00--0.10  
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.85\textwidth]{figures/fig1_boxplots_clave.pdf}
-\caption{Distribution of key metrics, academic vs.\ control repositories.}
+\caption{Distribution of key metrics, academic vs.\ control repositories}
 \label{fig:boxplots}
 \end{figure}
 
@@ -158,7 +163,7 @@ Because the control group is matched to the academic sample by language as well 
 
 \begin{table}[h]
 \centering
-\caption{Cyclomatic complexity (mean), academic vs.\ control, stratified by language (Holm-corrected across the three within-language tests).}
+\caption{Cyclomatic complexity (mean), academic vs.\ control, stratified by language (Holm-corrected across the three within-language tests)}
 \label{tab:by-language}
 \begin{tabular}{lccccc}
 \toprule
@@ -176,14 +181,14 @@ We also tested a second alternative explanation directly: that shorter-lived, le
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.7\textwidth]{figures/fig2_distribucion_tests.pdf}
-\caption{Distribution of the test-file-proportion proxy, academic vs.\ control.}
+\caption{Distribution of the test-file-proportion proxy, academic vs.\ control}
 \label{fig:testfile}
 \end{figure}
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.75\textwidth]{figures/fig3_nloc_vs_duplicacion.pdf}
-\caption{Repository size (lines of code) vs.\ code duplication, academic vs.\ control. Trend lines depict ordinary least squares (OLS) linear regressions for academic (solid) and control (dashed) repositories, with shaded 95\% confidence bands.}
+\caption{Repository size (lines of code) vs.\ code duplication, academic vs.\ control. Trend lines depict ordinary least squares (OLS) linear regressions for academic (solid) and control (dashed) repositories, with shaded 95\% confidence bands}
 \label{fig:nloc-dup}
 \end{figure}
 
@@ -191,7 +196,7 @@ We also tested a second alternative explanation directly: that shorter-lived, le
 
 \begin{table}[h]
 \centering
-\caption{Academic vs.\ control comparison on SonarQube-native metrics, 415 repositories (Holm-corrected).}
+\caption{Academic vs.\ control comparison on SonarQube-native metrics, 415 repositories (Holm-corrected)}
 \label{tab:sonarqube}
 \begin{tabular}{lccccc}
 \toprule
@@ -213,7 +218,7 @@ Figure~\ref{fig:efectos} shows the ten most frequent SonarQube code-smell types,
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.9\textwidth]{figures/fig4_resumen_efectos.pdf}
-\caption{The ten most frequent SonarQube code-smell types, academic vs.\ control (415 repositories analyzed).}
+\caption{The ten most frequent SonarQube code-smell types, academic vs.\ control (415 repositories analyzed)}
 \label{fig:efectos}
 \end{figure}
 
@@ -250,7 +255,7 @@ This research received no external funding. It was conducted within the academic
 The authors declare that they have no conflict of interest.
 
 \section*{Use of Generative AI}
-During the preparation of this manuscript, the authors used large language models exclusively for language refinement, grammatical correction, and LaTeX formatting. All research questions, experimental design, code extraction pipelines, statistical analyses, and scientific interpretations were conceived, executed, and validated entirely by the human authors.
+Generative AI tools (large language models) were used during this work to assist with drafting and editing text, writing and debugging analysis scripts, LaTeX formatting, and pre-submission critical review. All research questions, study design, data collection, executed analyses, reported results, and interpretations were defined, run, and verified by the authors, who take full responsibility for the content of this article. No figure was produced with image-generation tools.
 
 \section*{Author Contributions}
 \textbf{Isaac David Torres-Paredes:} Conceptualization, Methodology, Project Administration, Supervision, Writing - Original Draft. \textbf{Juan Pablo Aviles-Esparza:} Software, Formal Analysis, Data Curation, Writing - Review \& Editing. \textbf{Italo Javier Tenempaguay-Granizo:} Validation, Investigation, Writing - Review \& Editing.

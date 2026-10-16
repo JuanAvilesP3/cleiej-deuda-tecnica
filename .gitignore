@@ -13,3 +13,6 @@ data/raw/*
 data/processed/
 # Registros de ejecucion del pipeline (run_all.py), si se publican
 !results/logs/*.log
+
+# Paquete de envio generado (make_envio.py); copias de paper/
+envio/
