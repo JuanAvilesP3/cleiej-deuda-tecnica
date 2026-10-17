@@ -2,7 +2,7 @@
 P9 - Deuda tecnica en software academico latinoamericano
 04f_sonarqube_attrition_bias.py
 
-Robustez (revision interna, seguimiento): la Discusion original
+Robustez: la Discusion original
 dejaba como pregunta abierta si la atricion diferencial hacia la
 sub-muestra de SonarQube (415 de 546 repos re-clonados) sesga sus
 resultados. Se prueba directamente: se cruza la muestra primaria

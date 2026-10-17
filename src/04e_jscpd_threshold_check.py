@@ -2,7 +2,7 @@
 P9 - Deuda tecnica en software academico latinoamericano
 04e_jscpd_threshold_check.py
 
-Robustez (revision interna ronda 2): la Discusion del manuscrito
+Robustez: la Discusion del manuscrito
 deja como discrepancia sin resolver que jscpd (umbral por defecto,
 ~50 tokens) no encuentra diferencia de duplicacion academico/control,
 mientras SonarQube (umbral tipico ~100 tokens / 10 lineas para Java) si

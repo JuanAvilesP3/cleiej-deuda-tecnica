@@ -2,7 +2,7 @@
 P9 - Deuda tecnica en software academico latinoamericano
 04b_language_stratified.py
 
-La revision interna señalo que el grupo control se parea por
+En la revision interna se señalo que el grupo control se parea por
 lenguaje Y tamano, pero nunca se reporta si el efecto de complejidad
 sobrevive DENTRO de cada lenguaje por separado -- si un lenguaje
 domina la composicion y tiene su propia complejidad tipica, el

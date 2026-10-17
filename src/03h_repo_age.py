@@ -2,7 +2,7 @@
 P9 - Deuda tecnica en software academico latinoamericano
 03h_repo_age.py
 
-La revision interna señalo una explicacion alternativa para la
+En la revision interna se señalo una explicacion alternativa para la
 menor complejidad academica que no se habia probado: los proyectos
 de curso duran poco (terminan cuando termina el semestre) y el
 codigo se acumula complejidad con el mantenimiento, asi que "mas

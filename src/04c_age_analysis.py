@@ -3,7 +3,7 @@ P9 - Deuda tecnica en software academico latinoamericano
 04c_age_analysis.py
 
 Prueba directa de la explicacion alternativa que senalo la revision
-adversarial: si el codigo academico es simplemente mas joven / con
+interna: si el codigo academico es simplemente mas joven / con
 menos historial de mantenimiento (los proyectos de curso terminan
 cuando termina el semestre), eso -- no "academico vs no-academico"
 per se -- podria explicar la menor complejidad observada.

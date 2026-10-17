@@ -16,3 +16,17 @@ data/processed/
 
 # Paquete de envio generado (make_envio.py); copias de paper/
 envio/
+
+# Datos que se publican con el articulo (listas de repositorios, registros y metricas por repositorio)
+!data/raw/*.jsonl
+!data/raw/metrics_academico.csv
+!data/raw/metrics_control.csv
+
+# Documentos internos del proceso de envio (se mantienen solo en local)
+ENVIO.md
+envio_LEEME.md
+JOURNAL.md
+BITACORA.md
+paper/cover_letter.md
+paper/declaraciones.md
+paper/alslman2.pdf
