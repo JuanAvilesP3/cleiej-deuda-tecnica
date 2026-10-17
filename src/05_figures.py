@@ -72,11 +72,14 @@ def fig1_boxplots_clave(df):
 
 
 def fig2_test_file_ratio(df):
+    # Revision cruzada (16/10): contornos y trama distintos para distinguir los grupos en B/N.
     fig, ax = plt.subplots(figsize=(7, 4.5))
     bins = np.linspace(0, max(df["test_file_ratio"].max(), 0.1), 25)
+    styles = {"academico": dict(histtype="stepfilled", alpha=0.45, edgecolor="black", linewidth=1.0),
+              "control": dict(histtype="step", hatch="///", linewidth=1.6, linestyle="--")}
     for g, color in GROUP_COLORS.items():
-        ax.hist(df[df.group == g]["test_file_ratio"].dropna(), bins=bins, alpha=0.6,
-                 color=color, label=GROUP_LABELS[g], density=True)
+        ax.hist(df[df.group == g]["test_file_ratio"].dropna(), bins=bins, color=color,
+                label=GROUP_LABELS[g], density=True, **styles[g])
     ax.set_xlabel("Proportion of test files")
     ax.set_ylabel("Density")
     ax.legend(fontsize=9)
@@ -86,17 +89,27 @@ def fig2_test_file_ratio(df):
 
 
 def fig3_nloc_vs_duplicacion(df):
+    # Revision cruzada (16/10): recta continua (academico) y discontinua (control), ajustada por
+    # minimos cuadrados sobre log10(NLOC), con banda de confianza del 95 % por bootstrap.
     fig, ax = plt.subplots(figsize=(7.5, 5))
     markers = {"academico": "o", "control": "^"}
+    lines = {"academico": "-", "control": "--"}
+    rng = np.random.RandomState(42)
     for g, color in GROUP_COLORS.items():
         sub = df[df.group == g].dropna(subset=["nloc_total", "duplication_pct"])
-        ax.scatter(sub["nloc_total"], sub["duplication_pct"], color=color, alpha=0.5, s=25, marker=markers[g], label=GROUP_LABELS[g])
+        ax.scatter(sub["nloc_total"], sub["duplication_pct"], color=color, alpha=0.45, s=22, marker=markers[g],
+                   edgecolors="black", linewidths=0.3, label=GROUP_LABELS[g])
         if len(sub) > 2:
-            x, y = sub["nloc_total"].values, sub["duplication_pct"].values
-            order = np.argsort(x)
-            coef = np.polyfit(np.log10(x + 1), y, 1)
-            xs = np.sort(x)
-            ax.plot(xs, np.polyval(coef, np.log10(xs + 1)), color=color, linewidth=2)
+            lx, y = np.log10(sub["nloc_total"].values + 1), sub["duplication_pct"].values
+            xs = np.linspace(lx.min(), lx.max(), 100)
+            boots = []
+            for _ in range(1000):
+                i = rng.randint(0, len(lx), len(lx))
+                boots.append(np.polyval(np.polyfit(lx[i], y[i], 1), xs))
+            lo, hi = np.percentile(boots, [2.5, 97.5], axis=0)
+            ax.fill_between(10 ** xs, lo, hi, color=color, alpha=0.18, linewidth=0)
+            ax.plot(10 ** xs, np.polyval(np.polyfit(lx, y, 1), xs), color=color, linewidth=2.2, linestyle=lines[g],
+                    label=f"{GROUP_LABELS[g]} trend")
 
     ax.set_xscale("log")
     ax.set_xlabel("Lines of code (NLOC, log scale)")
@@ -108,27 +121,35 @@ def fig3_nloc_vs_duplicacion(df):
 
 
 def fig4_resumen_efectos(mw=None):
-    # Genera la Fig. 4 real de SonarQube (los 10 code smells mas frecuentes)
+    # Fig. 4: los 10 tipos de code smell mas frecuentes. Revision cruzada (16/10): los conteos se
+    # normalizan por 1.000 lineas de codigo (NCLOC total de cada grupo en SonarQube), porque los
+    # grupos tienen distinto numero de repositorios (223 vs 192) y distinto volumen de codigo.
     raw_smells = RESULTS_DIR / "sonarqube_smell_types_by_group.csv"
-    if raw_smells.exists():
-        df_smells = pd.read_csv(raw_smells)
-        top10 = df_smells.sort_values("count_total", ascending=False).head(10).iloc[::-1]
-
-        fig, ax = plt.subplots(figsize=(11, 6))
-        y = np.arange(len(top10))
-        h = 0.38
-        ax.barh(y + h / 2, top10["count_academico"], height=h, color=COLORS["primary"], label="Academic")
-        ax.barh(y - h / 2, top10["count_control"], height=h, color=COLORS["secondary"], label="Control")
-        ax.set_yticks(y)
-        ax.set_yticklabels(top10["rule_name"], fontsize=9)
-        ax.set_xlabel("Number of issues (SonarQube CODE_SMELL rule violations)", fontsize=10)
-        ax.legend(loc="lower right", fontsize=9.5)
-        fig.subplots_adjust(left=0.45)
-        save_figure(fig, FIG_DIR / "fig4_resumen_efectos")
-        save_figure(fig, PAPER_FIG_DIR / "fig4_resumen_efectos")
-        plt.close(fig)
-    else:
+    if not raw_smells.exists():
         print("Warning: sonarqube_smell_types_by_group.csv not found")
+        return
+    df_smells = pd.read_csv(raw_smells)
+    sonar = pd.read_csv(RESULTS_DIR / "metrics_sonarqube.csv")
+    kloc = sonar.groupby("group")["ncloc"].sum() / 1000
+    top10 = df_smells.sort_values("count_total", ascending=False).head(10).iloc[::-1].copy()
+    top10["rate_academico"] = top10["count_academico"] / kloc["academico"]
+    top10["rate_control"] = top10["count_control"] / kloc["control"]
+    top10.to_csv(RESULTS_DIR / "sonarqube_smell_types_top10_per_kloc.csv", index=False)
+
+    fig, ax = plt.subplots(figsize=(11, 6))
+    y = np.arange(len(top10))
+    h = 0.38
+    ax.barh(y + h / 2, top10["rate_academico"], height=h, color=COLORS["primary"], edgecolor="black", linewidth=0.5, label="Academic")
+    ax.barh(y - h / 2, top10["rate_control"], height=h, color=COLORS["secondary"], edgecolor="black", linewidth=0.5,
+            hatch="///", label="Control")
+    ax.set_yticks(y)
+    ax.set_yticklabels(top10["rule_name"], fontsize=9)
+    ax.set_xlabel("Issues per 1,000 lines of code (SonarQube CODE_SMELL rule violations)", fontsize=10)
+    ax.legend(loc="lower right", fontsize=9.5)
+    fig.subplots_adjust(left=0.45)
+    save_figure(fig, FIG_DIR / "fig4_resumen_efectos")
+    save_figure(fig, PAPER_FIG_DIR / "fig4_resumen_efectos")
+    plt.close(fig)
 
 
 def main():

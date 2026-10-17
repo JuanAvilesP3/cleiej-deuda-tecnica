@@ -63,7 +63,7 @@ def count_satd(repo_dir: Path) -> int:
 
 
 def main():
-    sonar = pd.read_csv(RAW_DIR / "metrics_sonarqube.csv")
+    sonar = pd.read_csv(RESULTS_DIR / "metrics_sonarqube.csv")
     sonar = sonar.dropna(subset=["ncloc"])
     sonar = sonar[sonar["ncloc"] > 0]
 

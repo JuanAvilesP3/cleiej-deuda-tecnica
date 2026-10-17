@@ -1,0 +1,11 @@
+rule_key,rule_name,count_academico,count_control,count_total,rate_academico,rate_control
+python:S3776,Cognitive Complexity of functions should not be too high,444,728,1172,0.41002568201400186,0.7396938195939609
+javascript:S3358,Ternary operators should not be nested,358,875,1233,0.33060629315543394,0.8890550716273569
+java:S120,Package names should comply with a naming convention,1235,76,1311,1.1404993632596674,0.07722078336420471
+javascript:S3504,"Variables should be declared with ""let"" or ""const""",1349,179,1528,1.2457762275605597,0.18187526608148213
+java:S1450,Private fields only used as local variables in methods should become local variables,1417,314,1731,1.308572953634776,0.31904376284684577
+java:S1192,String literals should not be duplicated,1201,1035,2236,1.109101000222559,1.0516251418677878
+java:S1220,The default unnamed package should not be used,114,2343,2457,0.10527686430089236,2.380635466083311
+javascript:S7764,"Use ""globalThis"" instead of ""window"", ""self"", or ""global""",2079,992,3071,1.9199175515925897,1.007934435490672
+java:S106,Standard outputs should not be used directly to log anything,2560,1750,4310,2.364112040441092,1.7781101432547137
+javascript:S6774,React components should validate prop types,3675,3284,6959,3.393793651805083,3.3367506916848457

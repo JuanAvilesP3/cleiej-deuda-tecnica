@@ -1,0 +1,15 @@
+medida,valor
+academico_n,274
+academico_sin_funciones_lizard,10
+academico_nloc_menor_10,11
+academico_mediana_funciones,153.0
+control_n,275
+control_sin_funciones_lizard,12
+control_nloc_menor_10,16
+control_mediana_funciones,180.0
+cc_max_sin_ajuste,beta_acad=-0.480 p=1.4e-06 n=527
+cc_max_ajuste_log_nloc,beta_acad=-0.334 p=1.3e-06 n=527
+cc_max_ajuste_log_funciones,beta_acad=-0.396 p=7.0e-08 n=527
+control_spearman_estrellas_cc_mean,rho=-0.138 p=0.026 n=263
+control_cc_mean_estrellas_ge1,n=57 mediana=2.83 vs n=206 mediana=3.21 p=0.036
+control_cc_mean_estrellas_ge5,n=17 mediana=2.16 vs n=246 mediana=3.21 p=0.050
