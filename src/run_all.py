@@ -46,7 +46,7 @@ def main():
     stamp = dt.datetime.now().strftime("%Y%m%d_%H%M%S")
     log_path = LOG_DIR / (f"environment_{stamp}.log" if a.env_only else f"run_{stamp}.log")
     with open(log_path, "w", encoding="utf-8") as log:
-        log.write(f"# {ROOT.name} - {dt.datetime.now().isoformat(timespec='seconds')}\n\n## Entorno\n")
+        log.write(f"# cleiej-deuda-tecnica - {dt.datetime.now().isoformat(timespec='seconds')}\n\n## Entorno\n")
         log.write("\n".join(environment_lines()) + "\n")
         if a.env_only:
             print(f"Entorno registrado en {log_path}")
